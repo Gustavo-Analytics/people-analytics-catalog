@@ -22,7 +22,7 @@ py projects/03-staged-assistant-architecture/src/evaluate.py
 ```
 
 Requer Python 3.10+ com `pandas`, `pyarrow` e `openpyxl`. As saídas vão para `out/` (ignorada pelo git).
-Para ver o mapa, abra `projects/01-ai-agent-data-lineage/index.html` no navegador.
+Mapa online: https://gustavo-analytics.github.io/people-analytics-catalog/ (ou abra `projects/01-ai-agent-data-lineage/index.html` no navegador).
 
 ## Segurança do próprio repositório
 
