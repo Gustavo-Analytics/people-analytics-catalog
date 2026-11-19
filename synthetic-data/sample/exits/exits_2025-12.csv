@@ -1,0 +1,11 @@
+person_key,employee_id,company,exit_date,initiative,reason
+06193990900,10013,Acme Logistics,2025-12-13,Employee,Relocation
+16152809879,10062,Acme Logistics,2025-12-07,Company,Relocation
+15542622161,10148,Acme Retail,2025-12-03,Employee,Restructuring
+01780068159,10247,Acme Logistics,2025-12-20,Company,Restructuring
+40665044268,10313,Acme Retail,2025-12-23,Employee,Restructuring
+77749050907,10380,Acme Retail,2025-12-04,Company,Relocation
+82422412441,10408,Acme Logistics,2025-12-02,Employee,Better offer
+43639102593,10449,Acme Retail,2025-12-16,Employee,Relocation
+02258030545,10489,Acme Logistics,2025-12-07,Employee,Performance
+43805719800,10208,Acme Pay,2025-11-27,Employee,Restructuring

@@ -1,0 +1,14 @@
+person_key,employee_id,company,exit_date,initiative,reason
+03166587668,10026,Acme Mobile,2026-05-13,Company,Restructuring
+06688937370,10027,Acme Retail,2026-05-07,Company,Career change
+66711684584,10144,Acme Retail,2026-05-22,Employee,Relocation
+29979545331,10295,Acme Logistics,2026-05-01,Employee,Restructuring
+4783667447,10309,Acme Mobile,2026-05-12,Company,Better offer
+04787300203,10342,Acme Tech,2026-05-10,Employee,Career change
+87506351901,10418,Acme Tech,2026-05-28,Employee,Relocation
+85787255811,10430,Acme Pay,2026-05-16,Employee,Career change
+43348170509,10438,Acme Retail,2026-05-15,Employee,Better offer
+50637314906,10447,Acme Retail,2026-05-12,Employee,Performance
+04326093189,10491,Acme Retail,2026-05-18,Employee,Better offer
+37618209171,10501,Acme Retail,2026-05-25,Company,Relocation
+46103399352,10409,Acme Pay,2026-04-28,Employee,Restructuring

@@ -1,0 +1,19 @@
+# Nunca versionar dado real ou saída de pipeline
+*.parquet
+*.xlsx
+*.xlsb
+*.xlsm
+*.pbix
+*.pptx
+*.env
+.env*
+*.pem
+*.key
+
+# Saídas geradas localmente (reproduzíveis a partir do dado sintético)
+out/
+__pycache__/
+*.pyc
+
+# Lista local de termos proibidos: contém nomes reais, NUNCA publicar
+tools/*.local.txt

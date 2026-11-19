@@ -1,0 +1,8 @@
+person_key,employee_id,company,exit_date,initiative,reason
+06540515341,10082,Acme Logistics,2026-08-27,Employee,Career change
+03640376103,10150,Acme Logistics,2026-08-19,Employee,Performance
+87205061475,10174,Acme Logistics,2026-08-21,Company,Restructuring
+40433504812,10264,Acme Logistics,2026-08-24,Employee,Performance
+07572158669,10376,Acme Retail,2026-08-11,Company,Relocation
+56609314137,10478,Acme Pay,2026-08-14,Company,Career change
+62272847693,10510,Acme Retail,2026-08-23,Employee,Performance
