@@ -2,7 +2,7 @@
 
 English: [README.md](README.md)
 
-Mapa interativo (`index.html`, sem dependências) do caminho de um dado de RH, da fonte até a resposta de um agente no chat.
+Mapa interativo (`index.pt-BR.html`, HTML, CSS e JavaScript puros, sem etapa de build; estilos e motor do mapa ficam em `assets/`). A fonte Poppins vem do Google Fonts; para evitar essa requisição de terceiros, remova o `<link>` da fonte e a página usa a fonte do sistema do caminho de um dado de RH, da fonte até a resposta de um agente no chat.
 
 ## Problema
 

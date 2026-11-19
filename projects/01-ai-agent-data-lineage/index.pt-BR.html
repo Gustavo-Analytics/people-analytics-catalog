@@ -3,109 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Data Lineage Map for an AI Agent</title>
-<style>
-:root{--bg:#f6f7f9;--fg:#15202b;--muted:#5b6b7a;--line:#d6dde4;--card:#fff;--accent:#0f766e;
---src:#64748b;--etl:#334155;--bronze:#9a5b32;--agg:#0f766e;--gold:#b7791f;--agent:#6d28d9;--warn:#b45309;--crit:#b91c1c;--ok:#15803d}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0e141b;--fg:#e6edf3;--muted:#9aa9b8;--line:#263341;--card:#151e28;--accent:#2dd4bf;
---src:#94a3b8;--etl:#cbd5e1;--bronze:#d9955f;--agg:#2dd4bf;--gold:#f0b84b;--agent:#a78bfa;--warn:#f59e0b;--crit:#f87171;--ok:#4ade80}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-a{color:var(--accent)}
-nav{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);display:flex;gap:20px;align-items:center;padding:10px 20px;flex-wrap:wrap}
-nav b{margin-right:auto}nav a{text-decoration:none;font-size:14px;color:var(--muted)}nav a:hover{color:var(--fg)}
-.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
-header.cover{padding:64px 0 40px}
-.kick{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
-h1{font-size:clamp(34px,6vw,56px);line-height:1.05;margin:8px 0 14px}
-.sub{max-width:62ch;color:var(--muted);font-size:18px}
-section{padding:40px 0;border-top:1px solid var(--line)}
-.label{font-size:13px;color:var(--accent);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
-h2{font-size:28px;margin:4px 0 8px}h3{font-size:18px;margin:28px 0 10px}
-.intro{color:var(--muted);max-width:70ch;margin:0 0 22px}
-.etapas{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
-.etp,.tier,.attn,.num,.pillar{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
-.etp .n{width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:13px}
-.etp h4{margin:8px 0 4px;font-size:16px}.etp p{margin:0 0 8px;font-size:14px;color:var(--muted)}
-.ex{font-size:12.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
-.duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
-.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 10px;border-radius:99px;color:#fff}
-.bronze .pill{background:var(--bronze)}.gold .pill{background:var(--gold)}
-.tier h4{margin:10px 0 4px}.tier p{margin:0 0 8px;color:var(--muted)}.tier ul{margin:0;padding-left:18px;font-size:14px}
-.kanon{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
-.kdemo .r{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
-.chip{font-size:12px;font-weight:600;padding:2px 10px;border-radius:99px;background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
-.chip.no{background:color-mix(in srgb,var(--crit) 16%,transparent);color:var(--crit)}
-.kdemo label{display:flex;gap:10px;align-items:center;font-size:14px;margin-top:12px}
-.toolbar{display:flex;flex-wrap:wrap;gap:14px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:10px}
-.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
-.scroller{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
-.stage{position:relative;display:flex;gap:46px;padding:18px;min-width:1560px}
-#wires{position:absolute;left:0;top:0;pointer-events:none}
-.col{position:relative;z-index:1;width:150px;display:flex;flex-direction:column;gap:10px}
-.col h5{margin:0 0 4px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.node{all:unset;box-sizing:border-box;cursor:pointer;display:block;background:var(--bg);border:1.5px solid var(--line);border-left:5px solid var(--c,var(--src));border-radius:8px;padding:7px 9px;width:100%}
-.node b{display:block;font-size:12.5px;line-height:1.25;word-break:break-word}
-.node span{display:block;font-size:11px;color:var(--muted);line-height:1.3}
-.node:focus-visible{outline:2px solid var(--accent)}
-.node.src{--c:var(--src)}.node.etl{--c:var(--etl)}.node.bronze{--c:var(--bronze)}.node.agg,.node.gold{--c:var(--agg)}.node.gold{--c:var(--gold)}.node.agent{--c:var(--agent)}
-.node.dim{opacity:.25}.node.on{border-color:var(--c);box-shadow:0 0 0 2px color-mix(in srgb,var(--c) 30%,transparent)}
-.wire{fill:none;stroke:var(--line);stroke-width:1.4}
-.wire.on{stroke:var(--accent);stroke-width:2.2}.wire.dim{opacity:.15}
-#detail{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;min-height:96px}
-#detail h4{margin:0 0 4px}#detail p{margin:0 0 6px;color:var(--muted)}#detail small{color:var(--muted)}
-.grid-attn{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
-.tagpill{font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:99px;text-transform:uppercase}
-.critico{background:color-mix(in srgb,var(--crit) 16%,transparent);color:var(--crit)}
-.atencao{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
-.ok{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
-.attn p{margin:8px 0 0;font-size:14px}
-.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
-.num .v{font-size:34px;font-weight:700;color:var(--accent)}.num .k{font-weight:600}.num .s{font-size:13px;color:var(--muted)}
-.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
-.pillar h4{margin:0 0 6px}.pillar ul{margin:0;padding-left:18px;font-size:14px;color:var(--muted)}
-footer{padding:28px 0 48px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
-</style>
+<title>Mapa de Linhagem de Dados de um Agente de IA</title>
+<meta name="description" content="Mapa interativo da linhagem de dados de um agente de IA para People Analytics, com uma empresa fictícia.">
+<script>document.documentElement.className+=" js"</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"></noscript>
+<link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-<nav><b>Data Lineage · AI Agent</b><a href="#etapas">01 Etapas</a><a href="#mapa">02 Mapa</a><a href="#atencao">03 Atenção</a><a href="#numeros">04 Números</a><a href="index.html" hreflang="en">EN</a></nav>
-<div class="wrap">
+<nav>
+  <div class="brand">Linhagem de dados <span>· Agente de IA</span></div>
+  <ul>
+    <li><a href="#etapas">01 Etapas</a></li><li><a href="#mapa">02 Mapa</a></li><li><a href="#atencao">03 Atenção</a></li><li><a href="#numeros">04 Números</a></li>
+    <li><a class="lang" href="index.html" hreflang="en">EN</a></li>
+  </ul>
+</nav>
+
 <header class="cover">
-  <div class="kick">Linhagem de dados · visão técnica</div>
-  <h1>Do sistema de origem<br>à resposta do agente</h1>
-  <p class="sub">Um agente de IA para People Analytics que lê apenas dados agregados e anonimizados. Este mapa mostra o caminho de cada dado, do sistema de origem ao canal de conversa, usando uma empresa fictícia (Acme Retail Group).</p>
+  <div>
+    <div class="kick">Linhagem de dados · visão técnica</div>
+    <h1>Do sistema de origem<br>à resposta do agente</h1>
+    <p class="sub">Um agente de IA para People Analytics que lê apenas dados agregados e anonimizados. Este mapa mostra o caminho de cada dado, do sistema de origem ao canal de conversa, usando uma empresa fictícia (Acme Retail Group).</p>
+    <div class="meta">Exemplo fictício · padrões genéricos</div>
+  </div>
+  <div class="appicon" aria-hidden="true">
+    <svg viewBox="0 0 120 120" width="56%"><g fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"><path d="M34 34C54 34 50 60 70 60"/><path d="M34 86C54 86 50 60 70 60"/><path d="M70 60H90"/></g><g fill="#fff"><rect x="12" y="23" width="24" height="22" rx="7"/><rect x="12" y="75" width="24" height="22" rx="7"/><rect x="58" y="49" width="24" height="22" rx="7"/><rect x="88" y="49" width="20" height="22" rx="7" opacity=".7"/></g></svg>
+  </div>
 </header>
 
-<section id="etapas">
+<section class="sl" id="etapas">
   <div class="label">01 · Etapas</div>
   <h2>Entenda as 8 etapas</h2>
   <p class="intro">O caminho de um dado de RH, da origem até a resposta no chat. Cada etapa é uma coluna do mapa.</p>
   <div class="etapas">
-    <div class="etp"><div class="n">1</div><h4>Sistemas de origem</h4><p>Onde o dado nasce: sistemas e planilhas da empresa.</p><div class="ex">folha, recrutamento, pesquisa de clima</div></div>
-    <div class="etp"><div class="n">2</div><h4>ETL</h4><p>Scripts que leem, limpam, padronizam e consolidam. ETL = extrair, transformar, carregar.</p><div class="ex">etl_headcount.py, etl_exits.py</div></div>
-    <div class="etp"><div class="n">3</div><h4>Bronze</h4><p>Dado consolidado e ainda nominal. Uso interno, nunca vai ao agente.</p><div class="ex">arquivos .parquet com chave de pessoa</div></div>
-    <div class="etp"><div class="n">4</div><h4>Agregação</h4><p>Soma por empresa e mês, aplica regras de negócio e k-anonimato, remove dado pessoal.</p><div class="ex">scripts build_gold_*.py</div></div>
-    <div class="etp"><div class="n">5</div><h4>Gold</h4><p>Resumo pronto para consumo: uma planilha por tema e corte, sem ninguém identificável.</p><div class="ex">arquivos .xlsx anonimizados</div></div>
-    <div class="etp"><div class="n">6</div><h4>Pasta de conhecimento</h4><p>Pasta na nuvem que serve de fonte de conhecimento do agente.</p><div class="ex">a indexação leva minutos</div></div>
-    <div class="etp"><div class="n">7</div><h4>Agente</h4><p>Lê só os Gold, segue instruções explícitas e responde.</p><div class="ex">modelo de linguagem em plataforma low-code</div></div>
-    <div class="etp"><div class="n">8</div><h4>Canal</h4><p>Onde a pessoa conversa com o agente, em linguagem natural.</p><div class="ex">app de chat com login corporativo</div></div>
+    <div class="etp rv"><div class="n">1</div><h4>Sistemas de origem</h4><p>Onde o dado nasce: sistemas e planilhas da empresa.</p><div class="ex">folha, recrutamento, pesquisa de clima</div></div>
+    <div class="etp rv"><div class="n">2</div><h4>ETL</h4><p>Scripts que leem, limpam, padronizam e consolidam. ETL = extrair, transformar, carregar.</p><div class="ex">etl_headcount.py, etl_exits.py</div></div>
+    <div class="etp rv"><div class="n">3</div><h4>Bronze</h4><p>Dado consolidado e ainda nominal. Uso interno, nunca vai ao agente.</p><div class="ex">arquivos .parquet com chave de pessoa</div></div>
+    <div class="etp rv"><div class="n">4</div><h4>Agregação</h4><p>Soma por empresa e mês, aplica regras de negócio e k-anonimato, remove dado pessoal.</p><div class="ex">scripts build_gold_*.py</div></div>
+    <div class="etp rv"><div class="n">5</div><h4>Gold</h4><p>Resumo pronto para consumo: uma planilha por tema e corte, sem ninguém identificável.</p><div class="ex">arquivos .xlsx anonimizados</div></div>
+    <div class="etp rv"><div class="n">6</div><h4>Pasta de conhecimento</h4><p>Pasta na nuvem que serve de fonte de conhecimento do agente.</p><div class="ex">a indexação leva minutos</div></div>
+    <div class="etp rv"><div class="n">7</div><h4>Agente</h4><p>Lê só os Gold, segue instruções explícitas e responde.</p><div class="ex">modelo de linguagem em plataforma low-code</div></div>
+    <div class="etp rv"><div class="n">8</div><h4>Canal</h4><p>Onde a pessoa conversa com o agente, em linguagem natural.</p><div class="ex">app de chat com login corporativo</div></div>
   </div>
 
-  <h3>Bronze e Gold em uma frase</h3>
+  <h3 class="subhead">Bronze e Gold em uma frase</h3>
   <div class="duo">
-    <div class="tier bronze"><span class="pill">Bronze · dado completo</span><h4>O estoque</h4><p>A base consolidada como ela é: uma linha por pessoa, com identificação. Serve aos cálculos e fica fora do alcance do agente.</p><ul><li>Contém chave de pessoa, empresa, área</li><li>Formato .parquet, histórico completo</li><li>Nunca conectado ao agente</li></ul></div>
-    <div class="tier gold"><span class="pill">Gold · dado pronto</span><h4>A vitrine</h4><p>Números já agrupados, por exemplo headcount por departamento e mês. É a única camada que o agente enxerga.</p><ul><li>Só totais por grupo</li><li>Formato .xlsx, porque a fonte de conhecimento não lê .parquet</li><li>Nome padrão: Tema - Corte.xlsx</li></ul></div>
+    <div class="tier bronze rv"><span class="pill">Bronze · dado completo</span><h4>O estoque</h4><p>A base consolidada como ela é: uma linha por pessoa, com identificação. Serve aos cálculos e fica fora do alcance do agente.</p><ul><li>Contém chave de pessoa, empresa, área</li><li>Formato .parquet, histórico completo</li><li>Nunca conectado ao agente</li></ul></div>
+    <div class="tier gold rv"><span class="pill">Gold · dado pronto</span><h4>A vitrine</h4><p>Números já agrupados, por exemplo headcount por departamento e mês. É a única camada que o agente enxerga.</p><ul><li>Só totais por grupo</li><li>Formato .xlsx, porque a fonte de conhecimento não lê .parquet</li><li>Nome padrão: Tema - Corte.xlsx</li></ul></div>
   </div>
 
-  <h3>Regra de privacidade: k-anonimato</h3>
-  <div class="kanon">
-    <div><span class="pill" style="background:var(--accent);color:var(--bg)">Proteção das pessoas</span><h4 style="margin:10px 0 4px">Grupo pequeno não aparece</h4>
-      <p style="margin:0;color:var(--muted)">Um número só entra no Gold se o grupo tiver pelo menos <b>k pessoas</b>. Assim ninguém é identificado por exclusão: se só 2 pessoas têm determinada característica numa área, o valor é suprimido. Mexa no controle ao lado.</p></div>
+  <h3 class="subhead">Regra de privacidade: k-anonimato</h3>
+  <div class="kanon rv">
+    <div><span class="pill">Proteção das pessoas</span><h4 style="margin:12px 0 6px;font-size:14px;text-transform:uppercase;letter-spacing:.6px">Grupo pequeno não aparece</h4>
+      <p>Um número só entra no Gold se o grupo tiver pelo menos <b>k pessoas</b>. Assim ninguém é identificado por exclusão: se só 2 pessoas têm determinada característica numa área, o valor é suprimido. Mexa no controle ao lado.</p></div>
     <div class="kdemo" id="kdemo"></div>
   </div>
 </section>
 
-<section id="mapa">
+<section class="sl" id="mapa" style="padding-top:20px">
   <div class="label">02 · Mapa</div>
   <h2>Da origem ao chat</h2>
   <p class="intro">Oito camadas, da esquerda para a direita. Passe o mouse (ou toque) num bloco para ver tudo o que alimenta e tudo o que ele alimenta.</p>
@@ -114,47 +69,47 @@ footer{padding:28px 0 48px;color:var(--muted);font-size:13px;border-top:1px soli
     <span class="lg"><i style="background:var(--bronze)"></i>Bronze (nominal)</span>
     <span class="lg"><i style="background:var(--agg)"></i>Agregação</span>
     <span class="lg"><i style="background:var(--gold)"></i>Gold (anonimizado)</span>
-    <span class="lg"><i style="background:var(--agent)"></i>Agente e canal</span>
+    <span class="lg"><i style="background:var(--grad)"></i>Agente e canal</span>
+    <span class="hint">Passe o mouse · clique para fixar · Esc para limpar</span>
   </div>
   <div class="scroller"><div class="stage" id="stage"><svg id="wires"></svg></div></div>
-  <div id="detail"><small>Selecione um bloco do mapa.</small></div>
+  <div id="detail"></div>
 </section>
 
-<section id="atencao">
+<section class="sd" id="atencao">
   <div class="label">03 · Atenção</div>
   <h2>Pontos de atenção</h2>
   <p class="intro">O que costuma dar problema ou exige cuidado ao mexer neste fluxo.</p>
   <div class="grid-attn">
-    <div class="attn"><span class="tagpill critico">Crítico</span><p>O Bronze tem <b>chave de pessoa</b>. Nenhum arquivo desse nível pode ser conectado ao agente.</p></div>
-    <div class="attn"><span class="tagpill critico">Crítico</span><p>A fonte de conhecimento <b>só lê .xlsx</b>. Arquivo .parquet na pasta é ignorado.</p></div>
-    <div class="attn"><span class="tagpill atencao">Atenção</span><p>Arquivo novo ou alterado leva <b>alguns minutos</b> para ser indexado. Testar antes dá falso negativo.</p></div>
-    <div class="attn"><span class="tagpill atencao">Atenção</span><p>Trocar a fonte de conhecimento exige <b>remover, publicar, esperar, readicionar e publicar</b> de novo.</p></div>
-    <div class="attn"><span class="tagpill atencao">Atenção</span><p>Cruzar listas por chave exige <b>normalizar os dois lados</b> (por exemplo, restaurar zeros à esquerda). Senão o join falha em silêncio.</p></div>
-    <div class="attn"><span class="tagpill atencao">Atenção</span><p>Total publicado junto de um corte suprimido <b>revela a célula escondida</b> por subtração.</p></div>
-    <div class="attn"><span class="tagpill ok">OK</span><p><b>k-anonimato</b> aplicado nos cortes: grupos abaixo de k são suprimidos.</p></div>
-    <div class="attn"><span class="tagpill ok">OK</span><p>O arquivo-mestre define <b>qual arquivo usar no fallback</b>. O agente não escolhe sozinho.</p></div>
+    <div class="attn rv"><span class="tagpill critico">Crítico</span><p>O Bronze tem <b>chave de pessoa</b>. Nenhum arquivo desse nível pode ser conectado ao agente.</p></div>
+    <div class="attn rv"><span class="tagpill critico">Crítico</span><p>A fonte de conhecimento <b>só lê .xlsx</b>. Arquivo .parquet na pasta é ignorado.</p></div>
+    <div class="attn rv"><span class="tagpill atencao">Atenção</span><p>Arquivo novo ou alterado leva <b>alguns minutos</b> para ser indexado. Testar antes dá falso negativo.</p></div>
+    <div class="attn rv"><span class="tagpill atencao">Atenção</span><p>Trocar a fonte de conhecimento exige <b>remover, publicar, esperar, readicionar e publicar</b> de novo.</p></div>
+    <div class="attn rv"><span class="tagpill atencao">Atenção</span><p>Cruzar listas por chave exige <b>normalizar os dois lados</b> (por exemplo, restaurar zeros à esquerda). Senão o join falha em silêncio.</p></div>
+    <div class="attn rv"><span class="tagpill atencao">Atenção</span><p>Total publicado junto de um corte suprimido <b>revela a célula escondida</b> por subtração.</p></div>
+    <div class="attn rv"><span class="tagpill ok">OK</span><p><b>k-anonimato</b> aplicado nos cortes: grupos abaixo de k são suprimidos.</p></div>
+    <div class="attn rv"><span class="tagpill ok">OK</span><p>O arquivo-mestre define <b>qual arquivo usar no fallback</b>. O agente não escolhe sozinho.</p></div>
   </div>
 </section>
 
-<section id="numeros">
+<section class="sl" id="numeros">
   <div class="label">04 · Em números</div>
   <h2>Um fluxo em camadas, simples de auditar</h2>
   <p class="intro">Números ilustrativos do exemplo fictício deste repositório.</p>
   <div class="nums">
-    <div class="num"><div class="v">7</div><div class="k">Arquivos Gold</div><div class="s">xlsx na pasta de conhecimento</div></div>
-    <div class="num"><div class="v">3</div><div class="k">Caminhos até o Gold</div><div class="s">via agregação, via coleta assistida e via carga manual</div></div>
-    <div class="num"><div class="v">0</div><div class="k">Colunas de pessoa no Gold</div><div class="s">verificado por teste automático</div></div>
-    <div class="num"><div class="v">8</div><div class="k">Camadas</div><div class="s">da origem ao canal</div></div>
+    <div class="num rv"><div class="v" data-to="7">7</div><div class="k">Arquivos Gold</div><div class="s">xlsx na pasta de conhecimento</div></div>
+    <div class="num rv"><div class="v" data-to="3">3</div><div class="k">Caminhos até o Gold</div><div class="s">via agregação, via coleta assistida e via carga manual</div></div>
+    <div class="num rv"><div class="v" data-to="0">0</div><div class="k">Colunas de pessoa no Gold</div><div class="s">verificado por teste automático</div></div>
+    <div class="num rv"><div class="v" data-to="8">8</div><div class="k">Camadas</div><div class="s">da origem ao canal</div></div>
   </div>
   <div class="pillars">
-    <div class="pillar"><h4>Complexidade controlada</h4><ul><li>Cada Gold depende de 1 a 4 fontes</li><li>Regras de negócio aplicadas uma vez, no script</li><li>Pontes entre bases, como ID → chave de pessoa</li></ul></div>
-    <div class="pillar"><h4>Ganho de otimização</h4><ul><li>Perguntas respondidas em segundos</li><li>Fechamento mensal deixa de ser manual</li><li>Uma fonte única de resumos padronizados</li></ul></div>
-    <div class="pillar"><h4>Segurança do fluxo</h4><ul><li>Dado pessoal fora do alcance do agente</li><li>Grupos pequenos suprimidos</li><li>Indicador sem dado declarado como "n/a", nunca estimado</li></ul></div>
+    <div class="pillar rv"><h4>Complexidade controlada</h4><ul><li>Cada Gold depende de 1 a 4 fontes</li><li>Regras de negócio aplicadas uma vez, no script</li><li>Pontes entre bases, como ID → chave de pessoa</li></ul></div>
+    <div class="pillar rv"><h4>Ganho de otimização</h4><ul><li>Perguntas respondidas em segundos</li><li>Fechamento mensal deixa de ser manual</li><li>Uma fonte única de resumos padronizados</li></ul></div>
+    <div class="pillar rv"><h4>Segurança do fluxo</h4><ul><li>Dado pessoal fora do alcance do agente</li><li>Grupos pequenos suprimidos</li><li>Indicador sem dado declarado como "n/a", nunca estimado</li></ul></div>
   </div>
 </section>
 
-<footer>Conteúdo 100% fictício e genérico. Ver DISCLAIMER.md. Código do pipeline de exemplo em <code>../02-etl-consolidation-pattern</code>.</footer>
-</div>
+<footer>Conteúdo 100% fictício e genérico. Ver DISCLAIMER.pt-BR.md. Código do pipeline de exemplo em <code>../02-etl-consolidation-pattern</code>.</footer>
 
 <script>
 const DATA={
@@ -200,68 +155,11 @@ edges:[["payroll","e_hc"],["payroll","e_ex"],["ats","e_rq"],["talent","e_tl"],["
 ["ks","ag"],["ag","ch"]]
 };
 const KIND={src:"Origem",etl:"ETL",bronze:"Bronze",agg:"Agregação",gold:"Gold",agent:"Agente e canal"};
-const stage=document.getElementById("stage"),svg=document.getElementById("wires"),detail=document.getElementById("detail");
-const byId=Object.fromEntries(DATA.nodes.map(n=>[n.id,n]));
-const up={},down={};
-DATA.edges.forEach(([a,b])=>{(down[a]=down[a]||[]).push(b);(up[b]=up[b]||[]).push(a)});
-let pinned=null;
-
-function chain(id){const seen=new Set([id]);
-  const walk=(map,s)=>(map[s]||[]).forEach(t=>{if(!seen.has(t)){seen.add(t);walk(map,t)}});
-  walk(up,id);walk(down,id);return seen}
-
-function build(){
-  DATA.cols.forEach((c,i)=>{
-    const col=document.createElement("div");col.className="col";
-    col.innerHTML="<h5>"+c+"</h5>";
-    DATA.nodes.filter(n=>n.col===i).forEach(n=>{
-      const b=document.createElement("button");b.className="node "+n.kind;b.dataset.id=n.id;
-      b.innerHTML="<b>"+n.title+"</b><span>"+n.sub+"</span>";
-      b.addEventListener("mouseenter",()=>{if(!pinned)focus(n.id)});
-      b.addEventListener("mouseleave",()=>{if(!pinned)clear()});
-      b.addEventListener("click",()=>{pinned=(pinned===n.id)?null:n.id;pinned?focus(n.id):clear()});
-      col.appendChild(b)});
-    stage.appendChild(col)});
-  wire();requestAnimationFrame(wire);window.addEventListener("load",wire);setTimeout(wire,250)}
-
-function el(id){return stage.querySelector('[data-id="'+id+'"]')}
-
-function wire(){
-  svg.innerHTML="";const sr=stage.getBoundingClientRect();
-  svg.setAttribute("width",stage.scrollWidth);svg.setAttribute("height",stage.scrollHeight);
-  DATA.edges.forEach(([a,b])=>{
-    const A=el(a).getBoundingClientRect(),B=el(b).getBoundingClientRect();
-    const x1=A.right-sr.left,y1=A.top+A.height/2-sr.top,x2=B.left-sr.left,y2=B.top+B.height/2-sr.top;
-    const dx=Math.max(24,(x2-x1)/2);
-    const p=document.createElementNS("http://www.w3.org/2000/svg","path");
-    p.setAttribute("d","M"+x1+" "+y1+" C"+(x1+dx)+" "+y1+" "+(x2-dx)+" "+y2+" "+x2+" "+y2);
-    p.setAttribute("class","wire");p.dataset.a=a;p.dataset.b=b;svg.appendChild(p)})}
-
-function focus(id){
-  const s=chain(id);
-  stage.querySelectorAll(".node").forEach(n=>{const on=s.has(n.dataset.id);n.classList.toggle("on",on);n.classList.toggle("dim",!on)});
-  svg.querySelectorAll(".wire").forEach(w=>{const on=s.has(w.dataset.a)&&s.has(w.dataset.b);w.classList.toggle("on",on);w.classList.toggle("dim",!on)});
-  const n=byId[id],names=l=>(l||[]).map(x=>byId[x].title).join(", ")||"nenhum";
-  detail.innerHTML="<h4>"+n.title+" <small>· "+KIND[n.kind]+"</small></h4><p>"+n.detail+"</p><small><b>Recebe de:</b> "+names(up[id])+" &nbsp;·&nbsp; <b>Alimenta:</b> "+names(down[id])+"</small>"}
-
-function clear(){
-  stage.querySelectorAll(".node").forEach(n=>n.classList.remove("on","dim"));
-  svg.querySelectorAll(".wire").forEach(w=>w.classList.remove("on","dim"));
-  detail.innerHTML="<small>Selecione um bloco do mapa.</small>"}
-
-/* demo de k-anonimato */
-const GROUPS=[["Departamento A",14],["Departamento B",6],["Departamento C",2],["Departamento D",4]];
-function kdemo(){
-  const box=document.getElementById("kdemo");
-  box.innerHTML="<b>Exemplo · pessoas com uma característica protegida</b>"+
-   GROUPS.map(([g,n],i)=>'<div class="r"><span>'+g+" · "+n+' pessoas</span><span class="chip" id="kc'+i+'"></span></div>').join("")+
-   '<label>k mínimo <input type="range" id="kr" min="1" max="8" value="3"><b id="kv">3</b></label>';
-  const upd=()=>{const k=+document.getElementById("kr").value;document.getElementById("kv").textContent=k;
-    GROUPS.forEach(([g,n],i)=>{const c=document.getElementById("kc"+i);const ok=n>=k;c.textContent=ok?"aparece":"suprimido (k<"+k+")";c.className="chip"+(ok?"":" no")})};
-  document.getElementById("kr").addEventListener("input",upd);upd()}
-
-build();kdemo();
-let rt;window.addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(wire,120)});
+const T={none:"nenhum",from:"Recebe de:",feeds:"Alimenta:",select:"Selecione um bloco do mapa.",nominal:"Nominal",anon:"Anonimizado",
+  shown:"aparece",hidden:"suprimido (k<",demoTitle:"Exemplo · pessoas com uma característica protegida",
+  minK:"k mínimo",group:"Departamento",people:"pessoas"};
+const GROUPS=[["A",14],["B",6],["C",2],["D",4]];
 </script>
+<script src="assets/map.js"></script>
 </body>
 </html>

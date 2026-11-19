@@ -2,7 +2,9 @@
 
 Português: [README.pt-BR.md](README.pt-BR.md) · Interactive map: [index.html](index.html) ([live](https://gustavo-analytics.github.io/people-analytics-catalog/))
 
-A dependency-free interactive map (`index.html`) of the path an HR data point takes, from the source system to an agent's answer in a chat.
+An interactive map (`index.html`) of the path an HR data point takes, from the source system to an agent's answer in a chat. Plain HTML, CSS and JavaScript, no build step. Styles and the map engine live in `assets/`.
+
+The Poppins font loads from Google Fonts. To avoid that third-party request, remove the font `<link>` in the page and it falls back to the system font.
 
 ## Problem
 
