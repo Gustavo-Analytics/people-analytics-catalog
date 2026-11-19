@@ -32,3 +32,7 @@ Para ver o mapa, abra `projects/01-ai-agent-data-lineage/index.html` no navegado
 ## Autor
 
 Gustavo, People Analytics. [LinkedIn](https://www.linkedin.com/in/gustavo-13p/)
+
+## Licença
+
+[MIT](LICENSE)
