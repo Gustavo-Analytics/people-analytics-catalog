@@ -25,7 +25,7 @@
         const b = document.createElement("button");
         b.type = "button"; b.className = "node k-" + n.kind; b.dataset.id = n.id;
         const tg = TAG[n.kind];
-        b.innerHTML = (tg ? '<i class="tag ' + tg[0] + '">' + tg[1] + "</i>" : "") + "<b>" + n.title + "</b><span>" + n.sub + "</span>";
+        b.innerHTML = (tg ? '<i class="tag ' + tg[0] + '">' + tg[1] + "</i>" : "") + "<b>" + n.title.replace(/_/g, "_<wbr>") + "</b>" + (n.sub ? "<span>" + n.sub + "</span>" : "");
         b.addEventListener("mouseenter", () => { if (!pinned) focus(n.id); });
         b.addEventListener("mouseleave", () => { if (!pinned) clearFocus(); });
         b.addEventListener("focus", () => { if (!pinned) focus(n.id); });
