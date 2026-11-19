@@ -1,15 +1,18 @@
-"""Assistente em estágios: responde no estágio MAIS BARATO que resolva.
+"""Staged assistant: answers at the CHEAPEST stage that works.
 
-  0    lookup direto em pandas (métrica + empresa + mês), sem LLM
-  0.5  parser de período; mês fora da série é respondido na hora, sem LLM
-  1    contexto enxuto + LLM, para perguntas de interpretação ("explique", "resuma")
-  2    LLM gera código de análise, validado e executado em sandbox, para ranking e médias
-  3    fallback controlado
+  0    direct pandas lookup (metric + company + month), no LLM
+  0.5  period parser; a month outside the series is answered right away, no LLM
+  1    lean context + LLM, for interpretation questions ("explique", "resuma")
+  2    LLM writes analysis code, validated and run in a sandbox, for rankings and averages
+  3    controlled fallback
 
-Regras de ouro (cada uma evita uma chamada de LLM ou uma resposta inventada):
-  * Indicador sem fonte, mês fora da série e valor suprimido NUNCA sobem de estágio.
-  * O LLM só vê contexto filtrado e limitado em tamanho, nunca o Gold inteiro.
-  * O LLM é uma função plugável: `llm(prompt) -> str`. Nenhuma credencial vive neste código.
+Golden rules (each one avoids an LLM call or an invented answer):
+  * An indicator without a source, a month outside the series and a suppressed value NEVER escalate.
+  * The LLM only sees filtered, size-limited context, never the whole Gold.
+  * The LLM is a pluggable function: `llm(prompt) -> str`. No credential lives in this code.
+
+Language: the questions, keywords and answer strings are in Portuguese. The routing is
+language-independent; supporting another language means adding keyword lists and answer strings.
 """
 import re
 from dataclasses import dataclass
@@ -24,9 +27,9 @@ GOLD_DIR = Path(__file__).resolve().parents[2] / "02-etl-consolidation-pattern" 
 FILES = {"headcount": "Headcount - Gender (Core).xlsx", "turnover": "Turnover - Monthly.xlsx",
          "tth": "Time to Hire - Monthly.xlsx", "regret": "Regrettable Turnover.xlsx",
          "kpi": "KPI Card - Monthly.xlsx"}
-CONTEXT_BUDGET = 1500  # caracteres enviados ao LLM
+CONTEXT_BUDGET = 1500  # characters sent to the LLM
 
-# Ordem importa: o mais específico primeiro ("regrettable turnover" contém "turnover").
+# Order matters: most specific first ("regrettable turnover" contains "turnover").
 METRICS = {
     "regret": {"title": "Regrettable turnover", "table": "regret", "value": "regrettable_pct",
                "fmt": "pct", "monthly": False,
@@ -71,7 +74,7 @@ def load_tables(gold_dir=GOLD_DIR) -> dict:
     for key, name in FILES.items():
         path = Path(gold_dir) / name
         if not path.exists():
-            raise FileNotFoundError(f"{path} não existe. Rode o projeto 02 (consolidate.py e build_gold.py) antes.")
+            raise FileNotFoundError(f"{path} does not exist. Run project 02 (consolidate.py and build_gold.py) first.")
         tables[key] = pd.read_excel(path)
     tables["tth"] = tables["tth"].rename(columns={"closed_month": "month"})
     for key in ("headcount", "turnover", "tth"):
@@ -129,7 +132,7 @@ def stage0(q: str, metric: str, iso, t: dict) -> Answer:
     all_companies = sorted(t["headcount"]["company"].unique())
     companies = detect_companies(q, all_companies) or all_companies
     if spec["monthly"]:
-        month = iso or sorted(t["headcount"]["month"].unique())[-1]  # último mês da série inteira
+        month = iso or sorted(t["headcount"]["month"].unique())[-1]  # last month of the whole series
         title, sub = f"{spec['title']} em {label(month)}", df[df["month"] == month]
     else:
         title, sub = f"{spec['title']} (todo o período)", df
@@ -171,12 +174,12 @@ def stage2(q: str, t: dict, codegen):
 
 def answer(q: str, t: dict, llm=None, codegen=None) -> Answer:
     metric = detect_metric(q)
-    if metric and METRICS[metric].get("unavailable"):  # nunca sobe de estágio: o LLM inventaria
+    if metric and METRICS[metric].get("unavailable"):  # never escalates: an LLM would make it up
         return Answer(0, "unavailable", f"{METRICS[metric]['title']}: não disponível nas fontes atuais. "
                                          "Não vou estimar.")
     months = sorted(t["headcount"]["month"].unique())
     iso, status = parse_period(q, months)
-    if status == "out_of_range":  # estágio 0.5: barra antes de qualquer chamada de modelo
+    if status == "out_of_range":  # stage 0.5: stops it before any model call
         return Answer(0.5, "out_of_range",
                       f"Período fora da série disponível ({label(months[0])} a {label(months[-1])}).")
     kind = classify(q, metric)

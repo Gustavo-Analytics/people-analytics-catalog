@@ -1,18 +1,20 @@
 # People Analytics Catalog
 
-Padrões de engenharia de dados e de agentes de IA para People Analytics, demonstrados com **dados 100% sintéticos** de uma empresa fictícia (Acme Retail Group).
+Português: [README.pt-BR.md](README.pt-BR.md)
 
-> Foco: o **método**. Nenhum número, nome, regra ou documento de empregador aparece aqui. Ver [DISCLAIMER.md](DISCLAIMER.md).
+Data engineering and AI agent patterns for People Analytics, demonstrated with **100% synthetic data** from a fictional company (Acme Retail Group).
 
-## Projetos
+> Focus: the **method**. No numbers, names, rules or documents from any employer appear here. See [DISCLAIMER.md](DISCLAIMER.md).
 
-| # | Projeto | O que mostra | Status |
+## Projects
+
+| # | Project | What it shows | Status |
 |---|---|---|---|
-| 01 | [Linhagem de dados de um agente de IA](projects/01-ai-agent-data-lineage) | Mapa interativo das 8 camadas, da fonte ao chat, com Bronze/Gold e k-anonimato | Pronto |
-| 02 | [Padrão de ETL e consolidação](projects/02-etl-consolidation-pattern) | Pipeline Bronze → Gold executável: consolidação mensal, dedup, ponte ID → chave, supressão de grupos pequenos | Pronto |
-| 03 | [Arquitetura de assistente em estágios](projects/03-staged-assistant-architecture) | Responder barato primeiro (pandas), LLM só quando precisa | Pronto |
+| 01 | [Data lineage of an AI agent](projects/01-ai-agent-data-lineage) | Interactive map of the 8 layers, from source to chat, with Bronze/Gold and k-anonymity | Done |
+| 02 | [ETL and consolidation pattern](projects/02-etl-consolidation-pattern) | Runnable Bronze → Gold pipeline: monthly consolidation, dedup, ID → key bridge, small-group suppression | Done |
+| 03 | [Staged assistant architecture](projects/03-staged-assistant-architecture) | Answer cheap first (pandas), call an LLM only when needed | Done |
 
-## Como rodar o exemplo
+## Run the example
 
 ```bash
 py synthetic-data/generate.py
@@ -21,19 +23,19 @@ py projects/02-etl-consolidation-pattern/src/build_gold.py
 py projects/03-staged-assistant-architecture/src/evaluate.py
 ```
 
-Requer Python 3.10+ com `pandas`, `pyarrow` e `openpyxl`. As saídas vão para `out/` (ignorada pelo git).
-Mapa online: https://gustavo-analytics.github.io/people-analytics-catalog/ (ou abra `projects/01-ai-agent-data-lineage/index.html` no navegador).
+Requires Python 3.10+ with `pandas`, `pyarrow` and `openpyxl`. Outputs go to `out/` (ignored by git).
+Live map: https://gustavo-analytics.github.io/people-analytics-catalog/ (or open `projects/01-ai-agent-data-lineage/index.html` in a browser).
 
-## Segurança do próprio repositório
+## Safety of this repository
 
-- `tools/guard.py` varre o repositório atrás de termos proibidos, CPF válido, e-mails, caminhos de máquina, imagens embutidas e arquivos de dado. Rode antes de todo commit, ou instale o hook (`tools/pre-commit`).
-- Dados sintéticos usam CPFs com dígito verificador **inválido de propósito**, então o guarda consegue distinguir dado de teste de dado real.
-- Arquivos `.parquet`, `.xlsx` e similares estão no `.gitignore`.
+- `tools/guard.py` scans the repository for forbidden terms, valid CPF numbers, e-mail addresses, machine paths, embedded images and data files. Run it before every commit, or install the hook (`tools/pre-commit`).
+- Synthetic data uses CPF numbers with an **intentionally invalid** check digit, so the guard can tell test data from real data.
+- `.parquet`, `.xlsx` and similar files are in `.gitignore`.
 
-## Autor
-
-Gustavo, People Analytics. [LinkedIn](https://www.linkedin.com/in/gustavo-13p/)
-
-## Licença
+## License
 
 [MIT](LICENSE)
+
+## Author
+
+Gustavo, People Analytics. [LinkedIn](https://www.linkedin.com/in/gustavo-13p/)

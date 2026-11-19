@@ -1,18 +1,20 @@
-# 02 · Padrão de ETL e consolidação
+# 02 · ETL and consolidation pattern
 
-Pipeline executável, sobre dados sintéticos, que leva arquivos mensais soltos até planilhas Gold anonimizadas.
+Português: [README.pt-BR.md](README.pt-BR.md)
+
+A runnable pipeline, on synthetic data, that takes loose monthly files to anonymized Gold spreadsheets.
 
 ```
 synthetic-data/sample/*.csv
         │  src/consolidate.py
         ▼
-out/bronze/*.parquet     (nominal, uso interno)
+out/bronze/*.parquet     (nominal, internal use)
         │  src/build_gold.py
         ▼
-out/gold/*.xlsx          (agregado, sem coluna de pessoa)
+out/gold/*.xlsx          (aggregated, no person column)
 ```
 
-## Como rodar
+## How to run
 
 ```bash
 py synthetic-data/generate.py
@@ -20,37 +22,37 @@ py projects/02-etl-consolidation-pattern/src/consolidate.py
 py projects/02-etl-consolidation-pattern/src/build_gold.py
 ```
 
-Saída esperada do Bronze (semente fixa): `headcount 4890 linhas`, `exits 125 -> 106 (19 duplicadas removidas)`, `talentos 36 linhas, 0 sem correspondência`.
+Expected Bronze output (fixed seed): `headcount: 4890 -> 4890 rows`, `exits: 125 -> 106 rows (19 duplicates removed)`, `talent: 36 rows, 0 without a match in headcount`.
 
-## O que cada etapa resolve
+## What each step solves
 
 ### consolidate.py (Bronze)
-| Problema real | Tratamento |
+| Real-world problem | Treatment |
 |---|---|
-| Um arquivo por mês | `read_many` lê a pasta inteira e registra o `source_file` de origem |
-| CPF perde o zero à esquerda quando lido como número | Ler tudo como texto (`dtype=str`) e normalizar com `zfill(11)` **dos dois lados** do join |
-| Relatório cumulativo repete desligamentos | `drop_duplicates` pela chave de negócio (pessoa + data) e log de quantas linhas saíram |
-| Lista de talentos só traz o ID | Ponte ID → chave pela tabela de headcount, com contagem de IDs sem correspondência |
+| One file per month | `read_many` reads the whole folder and records the origin `source_file` |
+| CPF loses its leading zero when read as a number | Read everything as text (`dtype=str`) and normalize with `zfill(11)` on **both sides** of the join |
+| Cumulative report repeats terminations | `drop_duplicates` on the business key (person + date) and a log of how many rows were removed |
+| Talent list only has the employee ID | ID → person key bridge through the headcount table, with a count of IDs without a match |
 
 ### build_gold.py (Gold)
-| Regra | Implementação |
+| Rule | Implementation |
 |---|---|
-| k-anonimato | `suppress()` esvazia a célula abaixo de k e liga a flag `suppressed` |
-| k diferente por nível de detalhe | `K_DEFAULT = 3` (empresa), `K_DETAILED = 5` (empresa x departamento) |
-| Visão padronizada | Gênero só com vínculos principais (CLT e PJ) em arquivo próprio |
-| Indicador sem fonte | `n/a` no card mestre, nunca estimado |
-| Reconciliação | `assert`: headcount do card = Bronze; nenhuma coluna de pessoa no Gold |
+| k-anonymity | `suppress()` empties the cell below k and sets the `suppressed` flag |
+| Different k per level of detail | `K_DEFAULT = 3` (company), `K_DETAILED = 5` (company x department) |
+| Standardized view | Gender only for core contracts (CLT and PJ) in its own file |
+| Indicator without a source | `n/a` in the master card, never estimated |
+| Reconciliation | `assert`: card headcount = Bronze; no person column in Gold |
 
-## Limitações conhecidas
+## Known limitations
 
-- **Supressão complementar.** Suprimir uma célula não basta se o total do grupo é publicado: a subtração a revela. Aqui o corte fino não publica total.
-- **Turnover de 12 meses** exige série maior que a deste exemplo (12 meses de dado). O exemplo usa turnover mensal.
-- A geração é manual. O próximo passo natural é agendar a execução e registrar a reconciliação.
+- **Complementary suppression.** Suppressing a cell is not enough if the group total is published: subtraction reveals it. Here the fine cut publishes no total.
+- **12-month turnover** needs a longer series than this example (12 months of data). The example uses monthly turnover.
+- Generation is manual. The natural next step is to schedule the run and record the reconciliation.
 
-## Estrutura
+## Structure
 
 ```
 src/consolidate.py   Bronze
-src/build_gold.py    Gold + verificações
-out/                 gerado, ignorado pelo git
+src/build_gold.py    Gold + checks
+out/                 generated, ignored by git
 ```

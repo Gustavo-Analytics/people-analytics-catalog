@@ -1,15 +1,15 @@
-"""Guarda de publicação: bloqueia vazamento de dado ou de contexto interno.
+"""Publication guard: blocks leaks of data or internal context.
 
-Uso:
-    py tools/guard.py            # varre a pasta inteira
-    py tools/guard.py --staged   # varre só o que está no stage do git (hook de pre-commit)
+Usage:
+    py tools/guard.py            # scans the whole folder
+    py tools/guard.py --staged   # scans only what is staged in git (pre-commit hook)
 
-O que ele procura:
-  1. termos proibidos listados em tools/guard_terms.local.txt (arquivo local, fora do git)
-  2. CPF com dígito verificador VÁLIDO (os CPFs sintéticos são inválidos de propósito)
-  3. e-mails, exceto example.*, noreply e os liberados com "allow:" no arquivo local
-  4. caminhos de máquina/nuvem corporativa, GUIDs e imagens embutidas em base64
-  5. extensões de dado/binário e arquivos grandes
+What it looks for:
+  1. forbidden terms listed in tools/guard_terms.local.txt (local file, kept out of git)
+  2. CPF numbers with a VALID check digit (synthetic CPFs are invalid on purpose)
+  3. e-mail addresses, except example.*, noreply and those allowed with "allow:" in the local file
+  4. machine and corporate-cloud paths, GUIDs and base64-embedded images
+  5. data/binary extensions and large files
 """
 import re
 import subprocess
@@ -46,7 +46,7 @@ def cpf_is_valid(digits: str) -> bool:
 def load_terms():
     terms, allow = [], set()
     if not TERMS_FILE.exists():
-        print("AVISO: tools/guard_terms.local.txt não existe; só as checagens genéricas rodam.")
+        print("WARNING: tools/guard_terms.local.txt does not exist; only the generic checks run.")
         return terms, allow
     for line in TERMS_FILE.read_text(encoding="utf-8").splitlines():
         line = line.strip()
@@ -74,45 +74,45 @@ def scan(path: Path, terms, allow):
         return []
     problems = []
     if path.suffix.lower() in BLOCKED_EXT:
-        problems.append((rel, 0, f"extensão bloqueada ({path.suffix})"))
+        problems.append((rel, 0, f"blocked extension ({path.suffix})"))
     try:
         size = path.stat().st_size
     except OSError:
         return problems
     if size > MAX_BYTES:
-        problems.append((rel, 0, f"arquivo grande ({size // 1024} KB)"))
+        problems.append((rel, 0, f"large file ({size // 1024} KB)"))
     if path.suffix.lower() not in TEXT_EXT:
         return problems
     try:
         text = path.read_text(encoding="utf-8")
     except UnicodeDecodeError:
-        problems.append((rel, 0, "não é UTF-8; revisar manualmente"))
+        problems.append((rel, 0, "not UTF-8; review manually"))
         return problems
 
     low_name = rel.lower()
     for t in terms:
         if t in low_name:
-            problems.append((rel, 0, f"termo proibido no nome do arquivo: '{t}'"))
+            problems.append((rel, 0, f"forbidden term in file name: '{t}'"))
     for i, line in enumerate(text.splitlines(), 1):
         low = line.lower()
         for t in terms:
             if t in low:
-                problems.append((rel, i, f"termo proibido: '{t}'"))
+                problems.append((rel, i, f"forbidden term: '{t}'"))
         for m in RE_CPF.finditer(line):
             digits = re.sub(r"\D", "", m.group(1))
             if cpf_is_valid(digits):
-                problems.append((rel, i, "possível CPF válido"))
+                problems.append((rel, i, "possible valid CPF"))
         for m in RE_EMAIL.finditer(line):
             e = m.group(0).lower()
             if e in allow or "example." in e or "noreply" in e:
                 continue
-            problems.append((rel, i, "e-mail encontrado"))
+            problems.append((rel, i, "e-mail address found"))
         if RE_GUID.search(line):
-            problems.append((rel, i, "GUID (possível ID interno)"))
+            problems.append((rel, i, "GUID (possible internal ID)"))
         if RE_PATH.search(line) and rel != "tools/guard.py":
-            problems.append((rel, i, "caminho de máquina/nuvem"))
+            problems.append((rel, i, "machine/cloud path"))
         if RE_B64.search(line):
-            problems.append((rel, i, "imagem embutida em base64 (logo/marca?)"))
+            problems.append((rel, i, "base64-embedded image (logo/brand?)"))
     return problems
 
 
@@ -124,11 +124,11 @@ def main():
     for f in files:
         found.extend(scan(f, terms, allow))
     if found:
-        print(f"BLOQUEADO: {len(found)} achado(s) em {len(files)} arquivo(s)\n")
+        print(f"BLOCKED: {len(found)} finding(s) in {len(files)} file(s)\n")
         for rel, line, why in found:
             print(f"  {rel}{':' + str(line) if line else ''}  {why}")
         sys.exit(1)
-    print(f"OK: {len(files)} arquivo(s) verificados, nenhum achado.")
+    print(f"OK: {len(files)} file(s) checked, no findings.")
 
 
 if __name__ == "__main__":

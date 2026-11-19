@@ -1,12 +1,12 @@
-"""Gera um conjunto de dados de RH 100% sintético (sem pessoas nem empresa reais).
+"""Generate a 100% synthetic HR dataset (no real people, no real company).
 
-Reproduz de propósito os problemas que um ETL real encontra:
-  * arquivos mensais separados que precisam ser consolidados
-  * desligamentos repetidos em relatórios cumulativos (duplicatas)
-  * CPF com zero à esquerda, às vezes gravado como número (zero perdido)
-  * lista de talentos que só traz o ID do funcionário, sem CPF (ponte ID -> CPF)
+Deliberately reproduces the problems a real ETL runs into:
+  * separate monthly files that must be consolidated
+  * terminations repeated in cumulative reports (duplicates)
+  * CPF with a leading zero, sometimes stored as a number (zero lost)
+  * a talent list that only carries the employee ID, with no CPF (ID -> CPF bridge)
 
-Uso: py synthetic-data/generate.py
+Usage: py synthetic-data/generate.py
 """
 import csv
 import random
@@ -37,7 +37,7 @@ def pick(rng, pairs):
 
 
 def fake_cpf(rng, used):
-    """CPF sintético com dígito verificador ERRADO de propósito (nunca é um CPF real)."""
+    """Synthetic CPF with a WRONG check digit on purpose (never a real CPF)."""
     def dv(nums):
         s = sum(n * w for n, w in zip(nums, range(len(nums) + 1, 1, -1)))
         r = (s * 10) % 11
@@ -46,9 +46,9 @@ def fake_cpf(rng, used):
     while True:
         d = [rng.randint(0, 9) for _ in range(9)]
         if rng.random() < 0.30:
-            d[0] = 0  # garante casos com zero à esquerda
+            d[0] = 0  # guarantees cases with a leading zero
         d1 = dv(d)
-        d2 = (dv(d + [d1]) + 1) % 10  # força inválido
+        d2 = (dv(d + [d1]) + 1) % 10  # forces it to be invalid
         cpf = "".join(map(str, d + [d1, d2]))
         if cpf not in used:
             used.add(cpf)
@@ -112,10 +112,10 @@ def main():
                 exit_day = mdate + timedelta(days=rng.randint(0, 27))
                 key = p["person_key"]
                 if rng.random() < 0.03:
-                    key = str(int(key))  # zero à esquerda perdido (gravado como número)
+                    key = str(int(key))  # leading zero lost (stored as a number)
                 rows.append([key, p["employee_id"], p["company"], exit_day.isoformat(),
                              p["initiative"], p["reason"]])
-        # relatório cumulativo: repete parte dos desligamentos do mês anterior
+        # cumulative report: repeats part of the previous month's terminations
         dupes = [r for r in prev_rows if rng.random() < 0.20]
         with open(OUT / "exits" / f"exits_{mdate:%Y-%m}.csv", "w", newline="", encoding="utf-8") as f:
             w = csv.writer(f, lineterminator="\n")
@@ -138,13 +138,13 @@ def main():
         for r in range(160):
             opened = month_start(rng.randint(0, N_MONTHS - 1)) + timedelta(days=rng.randint(0, 27))
             closed = opened + timedelta(days=rng.randint(12, 75)) if rng.random() < 0.85 else None
-            if closed and closed > window_end:  # fecharia depois do corte dos dados: segue aberta
+            if closed and closed > window_end:  # would close after the data cutoff: still open
                 closed = None
             w.writerow([f"R{1000 + r}", pick(rng, COMPANIES), rng.choice(DEPARTMENTS),
                         opened.isoformat(), closed.isoformat() if closed else "",
                         "Internal" if rng.random() < 0.22 else "External"])
 
-    print(f"Dados sintéticos gerados em {OUT}")
+    print(f"Synthetic data generated in {OUT}")
 
 
 if __name__ == "__main__":

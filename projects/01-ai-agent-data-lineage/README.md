@@ -1,44 +1,46 @@
-# 01 · Linhagem de dados de um agente de IA
+# 01 · Data lineage of an AI agent
 
-Mapa interativo (`index.html`, sem dependências) do caminho de um dado de RH, da fonte até a resposta de um agente no chat.
+Português: [README.pt-BR.md](README.pt-BR.md) · Interactive map: [index.html](index.html) ([live](https://gustavo-analytics.github.io/people-analytics-catalog/))
 
-## Problema
+A dependency-free interactive map (`index.html`) of the path an HR data point takes, from the source system to an agent's answer in a chat.
 
-Um agente de IA que responde perguntas de People Analytics precisa de dados de pessoas. Os mesmos dados trazem risco: identificação individual, números errados por arquivo incorreto e respostas inventadas quando falta informação.
+## Problem
 
-## Solução em uma frase
+An AI agent that answers People Analytics questions needs data about people. The same data brings risk: identifying individuals, wrong numbers from the wrong file, and invented answers when information is missing.
 
-O agente **só lê uma camada Gold, anonimizada e agregada**. A camada nominal (Bronze) existe, mas fica fora do alcance dele.
+## Solution in one sentence
+
+The agent **only reads a Gold layer, anonymized and aggregated**. The nominal layer (Bronze) exists but stays out of its reach.
 
 ```
-Fontes → ETL → Bronze (nominal) → Agregação → Gold (anonimizado) → Pasta de conhecimento → Agente → Chat
+Sources → ETL → Bronze (nominal) → Aggregation → Gold (anonymized) → Knowledge folder → Agent → Chat
 ```
 
-## Decisões de design
+## Design decisions
 
-| Decisão | Por quê |
+| Decision | Why |
 |---|---|
-| Medalhão Bronze/Gold | Separa quem calcula (acesso ao nominal) de quem responde (só agregado). |
-| Gold sempre em `.xlsx` | A fonte de conhecimento da plataforma não lê `.parquet`. |
-| k-anonimato na agregação | Grupo pequeno é identificável por exclusão. Abaixo de k, o valor é suprimido. |
-| Arquivo-mestre por visão | Um card por empresa e mês. Evita que o agente junte arquivos de apoio por conta própria. |
-| Arquivo "padronizado" por visão | Se existe uma versão com filtro correto (ex.: só vínculos principais), o agente é proibido de usar a versão genérica. |
-| Indicador sem fonte = `n/a` | Estimar ou aproximar produz número plausível e errado. Declarar a ausência é mais honesto. |
-| Fallback fixo no mestre | Se o mestre ainda não foi indexado, as instruções dizem qual arquivo usar. O agente não escolhe. |
+| Bronze/Gold medallion | Separates who calculates (access to nominal data) from who answers (aggregates only). |
+| Gold always in `.xlsx` | The platform's knowledge source does not read `.parquet`. |
+| k-anonymity at aggregation | A small group is identifiable by exclusion. Below k, the value is suppressed. |
+| One master file per view | One card per company and month. Stops the agent from joining support files on its own. |
+| A "standardized" file per view | If a version with the right filter exists (for example, core contracts only), the agent is forbidden from using the generic version. |
+| Indicator without a source = `n/a` | Estimating or approximating produces a plausible, wrong number. Declaring the absence is more honest. |
+| Fixed fallback on the master | If the master is not indexed yet, the instructions say which file to use. The agent does not choose. |
 
-## Lições aprendidas
+## Lessons learned
 
-1. **A indexação demora.** Testar logo após publicar dá falso negativo. Trocar a fonte exige remover, publicar, esperar, readicionar e publicar.
-2. **Normalize chaves nos dois lados do join.** Zero à esquerda perdido por leitura numérica faz o cruzamento falhar sem erro.
-3. **Todo bloco que depende de um mestre precisa dizer o fallback.** Senão o agente escolhe o arquivo "mais parecido" e erra a escala.
-4. **Padronize a escala das colunas percentuais** entre arquivos (fração ou ×100, nunca os dois).
-5. **Conversas muito longas no canal de chat podem degradar a resposta.** Reiniciar a conversa resolve.
-6. **Não publique o total ao lado de um corte suprimido.** A subtração revela a célula escondida.
+1. **Indexing takes time.** Testing right after publishing gives false negatives. Changing the source means remove, publish, wait, re-add and publish again.
+2. **Normalize keys on both sides of a join.** A leading zero lost by numeric parsing makes the join fail without an error.
+3. **Every block that depends on a master needs a fallback.** Otherwise the agent picks the "closest" file and gets the scale wrong.
+4. **Standardize the scale of percentage columns** across files (fraction or ×100, never both).
+5. **Very long conversations in a chat channel can degrade answers.** Restarting the conversation fixes it.
+6. **Do not publish the total next to a suppressed cut.** Subtraction reveals the hidden cell.
 
-## Padrão de instruções do agente
+## Agent instruction pattern
 
-Veja [docs/agent-instructions-pattern.md](docs/agent-instructions-pattern.md).
+See [docs/agent-instructions-pattern.md](docs/agent-instructions-pattern.md).
 
-## Como usar o mapa
+## Using the map
 
-Abra `index.html`. Passe o mouse ou clique num bloco para destacar tudo o que o alimenta e tudo o que ele alimenta. Os dados do mapa estão no objeto `DATA` no fim do arquivo e são fictícios.
+Open `index.html`. Hover or click a block to highlight everything that feeds it and everything it feeds. The map data is in the `DATA` object at the end of the file and is fictional. A Portuguese version is in [index.pt-BR.html](index.pt-BR.html).

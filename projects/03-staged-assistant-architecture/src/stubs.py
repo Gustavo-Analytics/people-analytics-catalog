@@ -1,14 +1,14 @@
-"""Substitutos de um LLM real, para o exemplo rodar sem rede e sem chave de API.
+"""Stand-ins for a real LLM, so the example runs without network or API key.
 
-Para ligar um modelo de verdade, passe qualquer função `llm(prompt) -> str` e
-`codegen(question, schema) -> str` ao `answer()`. Leia a chave de uma variável de ambiente,
-nunca de um arquivo versionado.
+To plug in a real model, pass any function `llm(prompt) -> str` and
+`codegen(question, schema) -> str` to `answer()`. Read the key from an environment variable,
+never from a versioned file.
 """
 from periods import norm
 
 
 class StubLLM:
-    """Extrativo: devolve as primeiras linhas do contexto. Conta quantas vezes foi chamado."""
+    """Extractive: returns the first lines of the context. Counts how many times it was called."""
 
     def __init__(self):
         self.calls = 0
@@ -20,7 +20,7 @@ class StubLLM:
 
 
 class StubCodegen:
-    """Regras fixas no lugar de um modelo gerador de código. Conta as chamadas."""
+    """Fixed rules in place of a code-generating model. Counts the calls."""
 
     def __init__(self):
         self.calls = 0
@@ -37,4 +37,4 @@ class StubCodegen:
             ascending = "menor" in nq
             return ("last = headcount[headcount['month'] == headcount['month'].max()]\n"
                     f"result = last.set_index('company')['women_pct'].sort_values(ascending={ascending})")
-        raise NotImplementedError("sem regra para esta pergunta")
+        raise NotImplementedError("no rule for this question")

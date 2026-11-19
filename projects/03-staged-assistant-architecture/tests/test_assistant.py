@@ -1,6 +1,6 @@
-"""Testes das regras de ouro. Usam tabelas pequenas em memória, sem depender do Gold gerado.
+"""Tests of the golden rules. They use small in-memory tables, independent of the generated Gold.
 
-Uso: py -m unittest discover -s projects/03-staged-assistant-architecture/tests
+Usage: py -m unittest discover -s projects/03-staged-assistant-architecture/tests
 """
 import sys
 import unittest

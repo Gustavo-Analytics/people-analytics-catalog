@@ -1,8 +1,9 @@
-"""Estágio 2: executa código de análise gerado por um modelo, com validação prévia.
+"""Stage 2: runs analysis code written by a model, with prior validation.
 
-ATENÇÃO: isto é um esboço didático, NÃO uma fronteira de segurança. Ele barra o óbvio (import, acesso a
-atributos privados, escrita em arquivo, funções perigosas) e expõe só cópias dos dados Gold. Não limita
-tempo nem memória. Em produção, rode o código gerado num processo ou contêiner isolado, com limites.
+WARNING: this is a teaching sketch, NOT a security boundary. It blocks the obvious (imports, private
+attribute access, file writes, dangerous functions) and exposes only copies of the Gold data. It does
+not limit time or memory. In production, run the generated code in an isolated process or container,
+with limits.
 """
 import ast
 import builtins
@@ -25,28 +26,28 @@ def validate(code: str) -> ast.AST:
     try:
         tree = ast.parse(code)
     except SyntaxError as e:
-        raise SandboxError(f"código inválido: {e.msg}") from e
+        raise SandboxError(f"invalid code: {e.msg}") from e
     for node in ast.walk(tree):
         if isinstance(node, (ast.Import, ast.ImportFrom, ast.Global, ast.Nonlocal)):
-            raise SandboxError("import e escopo global não são permitidos")
+            raise SandboxError("imports and global scope are not allowed")
         if isinstance(node, ast.Name) and (node.id in BLOCKED_NAMES or node.id.startswith("__")):
-            raise SandboxError(f"nome bloqueado: {node.id}")
+            raise SandboxError(f"blocked name: {node.id}")
         if isinstance(node, ast.Attribute):
             a = node.attr
             if a.startswith("_") or a in BLOCKED_ATTRS or (a.startswith("to_") and a not in ALLOWED_TO):
-                raise SandboxError(f"atributo bloqueado: {a}")
+                raise SandboxError(f"blocked attribute: {a}")
     return tree
 
 
 def run_sandboxed(code: str, tables: dict):
-    """Executa `code` com `tables` (cópias dos DataFrames Gold) e devolve a variável `result`."""
+    """Runs `code` with `tables` (copies of the Gold DataFrames) and returns the `result` variable."""
     tree = validate(code)
     scope = dict(tables)
     scope["__builtins__"] = SAFE_BUILTINS
     try:
         exec(compile(tree, "<generated>", "exec"), scope)
     except Exception as e:
-        raise SandboxError(f"falha ao executar: {type(e).__name__}: {e}") from e
+        raise SandboxError(f"execution failed: {type(e).__name__}: {e}") from e
     if "result" not in scope:
-        raise SandboxError("o código não definiu a variável 'result'")
+        raise SandboxError("the code did not define the 'result' variable")
     return scope["result"]

@@ -1,13 +1,13 @@
-"""Camada Gold: agrega, aplica k-anonimato e grava planilhas prontas para consumo.
+"""Gold layer: aggregates, applies k-anonymity and writes spreadsheets ready for consumption.
 
-Entrada : out/bronze/*.parquet
-Saída   : out/gold/*.xlsx  (sem coluna de pessoa; é a única camada que um agente enxerga)
+Input : out/bronze/*.parquet
+Output: out/gold/*.xlsx  (no person column; the only layer an agent sees)
 
-Regras:
-  * K_DEFAULT: célula com menos de K pessoas é suprimida (vira vazio + flag).
-  * K_DETAILED: cortes mais finos (empresa x departamento) usam um K maior.
-  * Indicador sem dado é escrito como "n/a", nunca estimado nem deixado em branco sem explicação.
-  * Não publicar o total junto do corte suprimido: a soma entrega a célula escondida.
+Rules:
+  * K_DEFAULT: a cell with fewer than K people is suppressed (becomes empty + flag).
+  * K_DETAILED: finer cuts (company x department) use a larger K.
+  * An indicator without data is written as "n/a", never estimated nor left blank without explanation.
+  * Do not publish the total next to a suppressed cut: the sum gives away the hidden cell.
 """
 from pathlib import Path
 
@@ -46,7 +46,7 @@ def headcount_by_department(hc):
 
 
 def headcount_gender_core(hc):
-    core = hc[hc["contract_type"].isin(["CLT", "PJ"])]  # visão padronizada: sem estágio/aprendiz
+    core = hc[hc["contract_type"].isin(["CLT", "PJ"])]  # standardized view: no interns/apprentices
     g = core.groupby(["month", "company"]).agg(
         headcount=("employee_id", "size"),
         women=("gender", lambda s: (s == "F").sum())).reset_index()
@@ -66,7 +66,7 @@ def turnover_monthly(hc, ex):
     h = hc.groupby(["month", "company"]).size().reset_index(name="headcount")
     t = h.merge(e, on=["month", "company"], how="left").fillna({"Employee": 0, "Company": 0, "exits_total": 0})
     t["turnover_pct"] = (t["exits_total"] / t["headcount"]).round(4)
-    small = t["exits_total"] < K_DEFAULT  # poucos desligamentos: suprime e explica
+    small = t["exits_total"] < K_DEFAULT  # few terminations: suppress and explain
     t["suppressed"] = small | (t["headcount"] < K_DETAILED)
     t.loc[t["suppressed"], ["Employee", "Company", "exits_total", "turnover_pct"]] = pd.NA
     t = t.rename(columns={"Employee": "exits_voluntary", "Company": "exits_involuntary"})
@@ -87,7 +87,7 @@ def time_to_hire(rq):
 
 
 def regrettable_turnover(ex, tl):
-    """Talentos que saíram por iniciativa própria / total de saídas voluntárias (ponte ID -> chave)."""
+    """Talent who left on their own initiative / total voluntary exits (ID -> key bridge)."""
     vol = ex[ex["initiative"] == "Employee"]
     talent_keys = set(tl["person_key"].dropna())
     g = vol.assign(is_talent=vol["person_key"].isin(talent_keys)).groupby("company").agg(
@@ -100,7 +100,7 @@ def regrettable_turnover(ex, tl):
 
 
 def kpi_card(hc, turnover, tth, regret):
-    """Arquivo-mestre: um card por empresa no último mês. O agente lê este, não os arquivos de apoio."""
+    """Master file: one card per company for the last month. The agent reads this, not the support files."""
     last = hc["month"].max()
     base = hc[hc["month"] == last].groupby("company").agg(
         headcount=("employee_id", "size"), women=("gender", lambda s: (s == "F").sum())).reset_index()
@@ -112,7 +112,7 @@ def kpi_card(hc, turnover, tth, regret):
         .merge(h, on="company", how="left").merge(r, on="company", how="left")
     card.insert(0, "month", last)
     card = card.fillna(NA)
-    card["engagement_score"] = NA  # fonte ainda não disponível: declarado, não estimado
+    card["engagement_score"] = NA  # source not available yet: declared, not estimated
     write("KPI Card - Monthly", {"data": card})
     return card
 
@@ -130,12 +130,12 @@ def main():
     regret = regrettable_turnover(ex, tl)
     card = kpi_card(hc, turnover, tth, regret)
 
-    # Verificação: o Gold precisa reconciliar com o Bronze
+    # Check: Gold must reconcile with Bronze
     last = hc["month"].max()
-    assert card["headcount"].sum() == (hc["month"] == last).sum(), "headcount do card não bate com o Bronze"
+    assert card["headcount"].sum() == (hc["month"] == last).sum(), "card headcount does not match Bronze"
     gold_cols = set().union(*[set(pd.read_excel(p).columns) for p in GOLD.glob("*.xlsx")])
-    assert not gold_cols & {"person_key", "employee_id", "source_file"}, "coluna de pessoa vazou para o Gold"
-    print(f"Gold gravado em {GOLD} ({len(list(GOLD.glob('*.xlsx')))} arquivos). Verificações OK.")
+    assert not gold_cols & {"person_key", "employee_id", "source_file"}, "a person column leaked into Gold"
+    print(f"Gold written to {GOLD} ({len(list(GOLD.glob('*.xlsx')))} files). Checks OK.")
 
 
 if __name__ == "__main__":

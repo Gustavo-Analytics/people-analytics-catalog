@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -68,128 +68,128 @@ footer{padding:28px 0 48px;color:var(--muted);font-size:13px;border-top:1px soli
 </style>
 </head>
 <body>
-<nav><b>Data Lineage · AI Agent</b><a href="#etapas">01 Etapas</a><a href="#mapa">02 Mapa</a><a href="#atencao">03 Atenção</a><a href="#numeros">04 Números</a></nav>
+<nav><b>Data Lineage · AI Agent</b><a href="#etapas">01 Stages</a><a href="#mapa">02 Map</a><a href="#atencao">03 Attention</a><a href="#numeros">04 Numbers</a><a href="index.pt-BR.html" hreflang="pt-BR">PT</a></nav>
 <div class="wrap">
 <header class="cover">
-  <div class="kick">Linhagem de dados · visão técnica</div>
-  <h1>Do sistema de origem<br>à resposta do agente</h1>
-  <p class="sub">Um agente de IA para People Analytics que lê apenas dados agregados e anonimizados. Este mapa mostra o caminho de cada dado, do sistema de origem ao canal de conversa, usando uma empresa fictícia (Acme Retail Group).</p>
+  <div class="kick">Data lineage · technical view</div>
+  <h1>From the source system<br>to the agent's answer</h1>
+  <p class="sub">An AI agent for People Analytics that reads only aggregated, anonymized data. This map shows the path of each data point, from the source system to the chat channel, using a fictional company (Acme Retail Group).</p>
 </header>
 
 <section id="etapas">
-  <div class="label">01 · Etapas</div>
-  <h2>Entenda as 8 etapas</h2>
-  <p class="intro">O caminho de um dado de RH, da origem até a resposta no chat. Cada etapa é uma coluna do mapa.</p>
+  <div class="label">01 · Stages</div>
+  <h2>Understand the 8 stages</h2>
+  <p class="intro">The path of an HR data point, from the source to the answer in the chat. Each stage is a column of the map.</p>
   <div class="etapas">
-    <div class="etp"><div class="n">1</div><h4>Sistemas de origem</h4><p>Onde o dado nasce: sistemas e planilhas da empresa.</p><div class="ex">folha, recrutamento, pesquisa de clima</div></div>
-    <div class="etp"><div class="n">2</div><h4>ETL</h4><p>Scripts que leem, limpam, padronizam e consolidam. ETL = extrair, transformar, carregar.</p><div class="ex">etl_headcount.py, etl_exits.py</div></div>
-    <div class="etp"><div class="n">3</div><h4>Bronze</h4><p>Dado consolidado e ainda nominal. Uso interno, nunca vai ao agente.</p><div class="ex">arquivos .parquet com chave de pessoa</div></div>
-    <div class="etp"><div class="n">4</div><h4>Agregação</h4><p>Soma por empresa e mês, aplica regras de negócio e k-anonimato, remove dado pessoal.</p><div class="ex">scripts build_gold_*.py</div></div>
-    <div class="etp"><div class="n">5</div><h4>Gold</h4><p>Resumo pronto para consumo: uma planilha por tema e corte, sem ninguém identificável.</p><div class="ex">arquivos .xlsx anonimizados</div></div>
-    <div class="etp"><div class="n">6</div><h4>Pasta de conhecimento</h4><p>Pasta na nuvem que serve de fonte de conhecimento do agente.</p><div class="ex">a indexação leva minutos</div></div>
-    <div class="etp"><div class="n">7</div><h4>Agente</h4><p>Lê só os Gold, segue instruções explícitas e responde.</p><div class="ex">modelo de linguagem em plataforma low-code</div></div>
-    <div class="etp"><div class="n">8</div><h4>Canal</h4><p>Onde a pessoa conversa com o agente, em linguagem natural.</p><div class="ex">app de chat com login corporativo</div></div>
+    <div class="etp"><div class="n">1</div><h4>Source systems</h4><p>Where the data is born: company systems and spreadsheets.</p><div class="ex">payroll, recruiting, engagement survey</div></div>
+    <div class="etp"><div class="n">2</div><h4>ETL</h4><p>Scripts that read, clean, standardize and consolidate. ETL = extract, transform, load.</p><div class="ex">etl_headcount.py, etl_exits.py</div></div>
+    <div class="etp"><div class="n">3</div><h4>Bronze</h4><p>Consolidated data, still nominal. Internal use, never goes to the agent.</p><div class="ex">.parquet files with a person key</div></div>
+    <div class="etp"><div class="n">4</div><h4>Aggregation</h4><p>Sums by company and month, applies business rules and k-anonymity, removes personal data.</p><div class="ex">build_gold_*.py scripts</div></div>
+    <div class="etp"><div class="n">5</div><h4>Gold</h4><p>Ready-to-use summary: one spreadsheet per topic and cut, with nobody identifiable.</p><div class="ex">anonymized .xlsx files</div></div>
+    <div class="etp"><div class="n">6</div><h4>Knowledge folder</h4><p>A cloud folder that serves as the agent's knowledge source.</p><div class="ex">indexing takes minutes</div></div>
+    <div class="etp"><div class="n">7</div><h4>Agent</h4><p>Reads only the Gold files, follows explicit instructions and answers.</p><div class="ex">language model on a low-code platform</div></div>
+    <div class="etp"><div class="n">8</div><h4>Channel</h4><p>Where people talk to the agent, in natural language.</p><div class="ex">chat app with corporate sign-in</div></div>
   </div>
 
-  <h3>Bronze e Gold em uma frase</h3>
+  <h3>Bronze and Gold in one sentence</h3>
   <div class="duo">
-    <div class="tier bronze"><span class="pill">Bronze · dado completo</span><h4>O estoque</h4><p>A base consolidada como ela é: uma linha por pessoa, com identificação. Serve aos cálculos e fica fora do alcance do agente.</p><ul><li>Contém chave de pessoa, empresa, área</li><li>Formato .parquet, histórico completo</li><li>Nunca conectado ao agente</li></ul></div>
-    <div class="tier gold"><span class="pill">Gold · dado pronto</span><h4>A vitrine</h4><p>Números já agrupados, por exemplo headcount por departamento e mês. É a única camada que o agente enxerga.</p><ul><li>Só totais por grupo</li><li>Formato .xlsx, porque a fonte de conhecimento não lê .parquet</li><li>Nome padrão: Tema - Corte.xlsx</li></ul></div>
+    <div class="tier bronze"><span class="pill">Bronze · full data</span><h4>The stock</h4><p>The consolidated base as it is: one row per person, with identification. It serves the calculations and stays out of the agent's reach.</p><ul><li>Contains person key, company, area</li><li>.parquet format, full history</li><li>Never connected to the agent</li></ul></div>
+    <div class="tier gold"><span class="pill">Gold · ready data</span><h4>The showcase</h4><p>Numbers already grouped, for example headcount by department and month. It is the only layer the agent sees.</p><ul><li>Group totals only</li><li>.xlsx format, because the knowledge source does not read .parquet</li><li>Standard name: Topic - Cut.xlsx</li></ul></div>
   </div>
 
-  <h3>Regra de privacidade: k-anonimato</h3>
+  <h3>Privacy rule: k-anonymity</h3>
   <div class="kanon">
-    <div><span class="pill" style="background:var(--accent);color:var(--bg)">Proteção das pessoas</span><h4 style="margin:10px 0 4px">Grupo pequeno não aparece</h4>
-      <p style="margin:0;color:var(--muted)">Um número só entra no Gold se o grupo tiver pelo menos <b>k pessoas</b>. Assim ninguém é identificado por exclusão: se só 2 pessoas têm determinada característica numa área, o valor é suprimido. Mexa no controle ao lado.</p></div>
+    <div><span class="pill" style="background:var(--accent);color:var(--bg)">Protecting people</span><h4 style="margin:10px 0 4px">A small group does not show</h4>
+      <p style="margin:0;color:var(--muted)">A number only enters the Gold if the group has at least <b>k people</b>. That way nobody is identified by exclusion: if only 2 people in an area have a given characteristic, the value is suppressed. Try the control on the right.</p></div>
     <div class="kdemo" id="kdemo"></div>
   </div>
 </section>
 
 <section id="mapa">
-  <div class="label">02 · Mapa</div>
-  <h2>Da origem ao chat</h2>
-  <p class="intro">Oito camadas, da esquerda para a direita. Passe o mouse (ou toque) num bloco para ver tudo o que alimenta e tudo o que ele alimenta.</p>
+  <div class="label">02 · Map</div>
+  <h2>From source to chat</h2>
+  <p class="intro">Eight layers, from left to right. Hover (or tap) a block to see everything that feeds it and everything it feeds.</p>
   <div class="toolbar">
-    <span class="lg"><i style="background:var(--src)"></i>Origem e ETL</span>
+    <span class="lg"><i style="background:var(--src)"></i>Source and ETL</span>
     <span class="lg"><i style="background:var(--bronze)"></i>Bronze (nominal)</span>
-    <span class="lg"><i style="background:var(--agg)"></i>Agregação</span>
-    <span class="lg"><i style="background:var(--gold)"></i>Gold (anonimizado)</span>
-    <span class="lg"><i style="background:var(--agent)"></i>Agente e canal</span>
+    <span class="lg"><i style="background:var(--agg)"></i>Aggregation</span>
+    <span class="lg"><i style="background:var(--gold)"></i>Gold (anonymized)</span>
+    <span class="lg"><i style="background:var(--agent)"></i>Agent and channel</span>
   </div>
   <div class="scroller"><div class="stage" id="stage"><svg id="wires"></svg></div></div>
-  <div id="detail"><small>Selecione um bloco do mapa.</small></div>
+  <div id="detail"><small>Select a block on the map.</small></div>
 </section>
 
 <section id="atencao">
-  <div class="label">03 · Atenção</div>
-  <h2>Pontos de atenção</h2>
-  <p class="intro">O que costuma dar problema ou exige cuidado ao mexer neste fluxo.</p>
+  <div class="label">03 · Attention</div>
+  <h2>Attention points</h2>
+  <p class="intro">What usually goes wrong or needs care when changing this flow.</p>
   <div class="grid-attn">
-    <div class="attn"><span class="tagpill critico">Crítico</span><p>O Bronze tem <b>chave de pessoa</b>. Nenhum arquivo desse nível pode ser conectado ao agente.</p></div>
-    <div class="attn"><span class="tagpill critico">Crítico</span><p>A fonte de conhecimento <b>só lê .xlsx</b>. Arquivo .parquet na pasta é ignorado.</p></div>
-    <div class="attn"><span class="tagpill atencao">Atenção</span><p>Arquivo novo ou alterado leva <b>alguns minutos</b> para ser indexado. Testar antes dá falso negativo.</p></div>
-    <div class="attn"><span class="tagpill atencao">Atenção</span><p>Trocar a fonte de conhecimento exige <b>remover, publicar, esperar, readicionar e publicar</b> de novo.</p></div>
-    <div class="attn"><span class="tagpill atencao">Atenção</span><p>Cruzar listas por chave exige <b>normalizar os dois lados</b> (por exemplo, restaurar zeros à esquerda). Senão o join falha em silêncio.</p></div>
-    <div class="attn"><span class="tagpill atencao">Atenção</span><p>Total publicado junto de um corte suprimido <b>revela a célula escondida</b> por subtração.</p></div>
-    <div class="attn"><span class="tagpill ok">OK</span><p><b>k-anonimato</b> aplicado nos cortes: grupos abaixo de k são suprimidos.</p></div>
-    <div class="attn"><span class="tagpill ok">OK</span><p>O arquivo-mestre define <b>qual arquivo usar no fallback</b>. O agente não escolhe sozinho.</p></div>
+    <div class="attn"><span class="tagpill critico">Critical</span><p>Bronze holds a <b>person key</b>. No file at that level may be connected to the agent.</p></div>
+    <div class="attn"><span class="tagpill critico">Critical</span><p>The knowledge source <b>only reads .xlsx</b>. A .parquet file in the folder is ignored.</p></div>
+    <div class="attn"><span class="tagpill atencao">Attention</span><p>A new or changed file takes <b>a few minutes</b> to be indexed. Testing earlier gives a false negative.</p></div>
+    <div class="attn"><span class="tagpill atencao">Attention</span><p>Changing the knowledge source means <b>remove, publish, wait, re-add and publish</b> again.</p></div>
+    <div class="attn"><span class="tagpill atencao">Attention</span><p>Joining lists by key requires <b>normalizing both sides</b> (for example, restoring leading zeros). Otherwise the join fails silently.</p></div>
+    <div class="attn"><span class="tagpill atencao">Attention</span><p>A total published next to a suppressed cut <b>reveals the hidden cell</b> by subtraction.</p></div>
+    <div class="attn"><span class="tagpill ok">OK</span><p><b>k-anonymity</b> applied to the cuts: groups below k are suppressed.</p></div>
+    <div class="attn"><span class="tagpill ok">OK</span><p>The master file defines <b>which file to use as the fallback</b>. The agent does not choose on its own.</p></div>
   </div>
 </section>
 
 <section id="numeros">
-  <div class="label">04 · Em números</div>
-  <h2>Um fluxo em camadas, simples de auditar</h2>
-  <p class="intro">Números ilustrativos do exemplo fictício deste repositório.</p>
+  <div class="label">04 · In numbers</div>
+  <h2>A layered flow, easy to audit</h2>
+  <p class="intro">Illustrative numbers from the fictional example in this repository.</p>
   <div class="nums">
-    <div class="num"><div class="v">7</div><div class="k">Arquivos Gold</div><div class="s">xlsx na pasta de conhecimento</div></div>
-    <div class="num"><div class="v">3</div><div class="k">Caminhos até o Gold</div><div class="s">via agregação, via coleta assistida e via carga manual</div></div>
-    <div class="num"><div class="v">0</div><div class="k">Colunas de pessoa no Gold</div><div class="s">verificado por teste automático</div></div>
-    <div class="num"><div class="v">8</div><div class="k">Camadas</div><div class="s">da origem ao canal</div></div>
+    <div class="num"><div class="v">7</div><div class="k">Gold files</div><div class="s">xlsx in the knowledge folder</div></div>
+    <div class="num"><div class="v">3</div><div class="k">Paths to Gold</div><div class="s">via aggregation, assisted collection and manual load</div></div>
+    <div class="num"><div class="v">0</div><div class="k">Person columns in Gold</div><div class="s">checked by an automated test</div></div>
+    <div class="num"><div class="v">8</div><div class="k">Layers</div><div class="s">from source to channel</div></div>
   </div>
   <div class="pillars">
-    <div class="pillar"><h4>Complexidade controlada</h4><ul><li>Cada Gold depende de 1 a 4 fontes</li><li>Regras de negócio aplicadas uma vez, no script</li><li>Pontes entre bases, como ID → chave de pessoa</li></ul></div>
-    <div class="pillar"><h4>Ganho de otimização</h4><ul><li>Perguntas respondidas em segundos</li><li>Fechamento mensal deixa de ser manual</li><li>Uma fonte única de resumos padronizados</li></ul></div>
-    <div class="pillar"><h4>Segurança do fluxo</h4><ul><li>Dado pessoal fora do alcance do agente</li><li>Grupos pequenos suprimidos</li><li>Indicador sem dado declarado como "n/a", nunca estimado</li></ul></div>
+    <div class="pillar"><h4>Controlled complexity</h4><ul><li>Each Gold depends on 1 to 4 sources</li><li>Business rules applied once, in the script</li><li>Bridges between bases, such as ID → person key</li></ul></div>
+    <div class="pillar"><h4>Optimization gain</h4><ul><li>Questions answered in seconds</li><li>Monthly close stops being manual</li><li>A single source of standardized summaries</li></ul></div>
+    <div class="pillar"><h4>Flow security</h4><ul><li>Personal data out of the agent's reach</li><li>Small groups suppressed</li><li>An indicator without data is declared "n/a", never estimated</li></ul></div>
   </div>
 </section>
 
-<footer>Conteúdo 100% fictício e genérico. Ver DISCLAIMER.md. Código do pipeline de exemplo em <code>../02-etl-consolidation-pattern</code>.</footer>
+<footer>Fully fictional, generic content. See DISCLAIMER.md. Sample pipeline code in <code>../02-etl-consolidation-pattern</code>.</footer>
 </div>
 
 <script>
 const DATA={
-cols:["Fontes","ETL","Bronze","Agregação","Gold","Pasta de conhecimento","Agente","Canal"],
+cols:["Sources","ETL","Bronze","Aggregation","Gold","Knowledge folder","Agent","Channel"],
 nodes:[
-{id:"payroll",col:0,kind:"src",title:"Sistema de folha",sub:"cadastro, ponto",detail:"Cadastro de colaboradores e ponto das empresas do grupo. Fonte do headcount e dos desligamentos."},
-{id:"ats",col:0,kind:"src",title:"Recrutamento",sub:"vagas e contratações",detail:"Sistema de vagas. Origem do tempo de contratação e da movimentação interna."},
-{id:"talent",col:0,kind:"src",title:"Calibração de talentos",sub:"lista de IDs",detail:"Lista de pessoas de alto desempenho. Traz só o ID do funcionário, sem chave de pessoa, o que exige uma ponte."},
-{id:"survey",col:0,kind:"src",title:"Pesquisa de clima",sub:"planilha manual",detail:"Resultado por onda, preenchido à mão. Ainda não tem automação; entra como está."},
-{id:"reviews",col:0,kind:"src",title:"Avaliações públicas",sub:"reputação do empregador",detail:"Notas e comentários públicos do empregador, coletados mensalmente."},
-{id:"e_hc",col:1,kind:"etl",title:"etl_headcount.py",sub:"colaboradores ativos",detail:"Consolida as bases mensais de colaboradores, normaliza texto e chaves, remove duplicatas."},
-{id:"e_ex",col:1,kind:"etl",title:"etl_exits.py",sub:"desligamentos",detail:"Consolida relatórios cumulativos de desligamento. Deduplica por pessoa e data."},
-{id:"e_rq",col:1,kind:"etl",title:"etl_recruiting.py",sub:"vagas",detail:"Consolida vagas, calcula dias entre abertura e fechamento."},
-{id:"e_tl",col:1,kind:"etl",title:"bridge_talent.py",sub:"ID → chave de pessoa",detail:"Liga a lista de talentos ao cadastro pelo ID do funcionário. Registra quantos IDs ficaram sem correspondência."},
-{id:"e_rev",col:1,kind:"etl",title:"collect_reviews",sub:"coleta assistida",detail:"Coleta automatizada mensal das avaliações públicas. Grava direto no Gold, pois já são dados agregados."},
-{id:"b_hc",col:2,kind:"bronze",title:"headcount.parquet",sub:"nominal",detail:"Uma linha por pessoa e mês. Contém chave de pessoa. Nunca conectado ao agente."},
-{id:"b_ex",col:2,kind:"bronze",title:"exits.parquet",sub:"nominal",detail:"Uma linha por desligamento, com iniciativa (própria ou da empresa) e motivo."},
-{id:"b_rq",col:2,kind:"bronze",title:"requisitions.parquet",sub:"sem dado pessoal",detail:"Uma linha por vaga, com datas de abertura e fechamento."},
-{id:"b_tl",col:2,kind:"bronze",title:"talent.parquet",sub:"nominal",detail:"Lista de talentos já ligada à chave de pessoa pela ponte."},
-{id:"b_sv",col:2,kind:"bronze",title:"survey.xlsx",sub:"manual, agregado",detail:"Planilha de clima por empresa e onda. Sem ETL: é preenchida e conferida manualmente."},
-{id:"a_hc",col:3,kind:"agg",title:"build_gold_headcount.py",sub:"k = 5 no corte fino",detail:"Agrega headcount por empresa e departamento e por gênero. Aplica k-anonimato."},
-{id:"a_to",col:3,kind:"agg",title:"build_gold_turnover.py",sub:"mensal",detail:"Calcula desligamentos voluntários e involuntários por mês, com o headcount como denominador."},
-{id:"a_rq",col:3,kind:"agg",title:"build_gold_hiring.py",sub:"tempo de contratação",detail:"Média de dias por mês calendário de fechamento da vaga."},
-{id:"a_rt",col:3,kind:"agg",title:"build_gold_regrettable.py",sub:"talentos que saíram",detail:"Saídas voluntárias de pessoas da lista de talentos, sobre o total de saídas voluntárias."},
-{id:"a_kpi",col:3,kind:"agg",title:"build_kpi_card.py",sub:"arquivo-mestre",detail:"Junta os indicadores num card mensal por empresa. Indicador sem fonte sai como n/a."},
-{id:"g_hc",col:4,kind:"gold",title:"Headcount - Department",sub:".xlsx",detail:"Headcount por mês, empresa e departamento, com flag de supressão."},
-{id:"g_gd",col:4,kind:"gold",title:"Headcount - Gender (Core)",sub:".xlsx",detail:"Percentual de mulheres, só vínculos principais. Existe para o agente nunca usar o arquivo genérico nessa pergunta."},
-{id:"g_to",col:4,kind:"gold",title:"Turnover - Monthly",sub:".xlsx",detail:"Turnover mensal por empresa. Meses com poucos desligamentos são suprimidos."},
-{id:"g_tth",col:4,kind:"gold",title:"Time to Hire - Monthly",sub:".xlsx",detail:"Dias médios para fechar vagas, por mês de fechamento."},
-{id:"g_rt",col:4,kind:"gold",title:"Regrettable Turnover",sub:".xlsx",detail:"Percentual de saídas voluntárias que eram talentos."},
-{id:"g_kpi",col:4,kind:"gold",title:"KPI Card - Monthly",sub:".xlsx · mestre",detail:"Card de indicadores por empresa. É o arquivo que responde 'qual o indicador do mês'."},
-{id:"g_rv",col:4,kind:"gold",title:"Reviews - Summary",sub:".xlsx",detail:"Resumo das avaliações públicas por mês."},
-{id:"ks",col:5,kind:"agent",title:"Pasta de conhecimento",sub:"nuvem · só .xlsx",detail:"Pasta onde os Gold são publicados. A indexação não é instantânea."},
-{id:"ag",col:6,kind:"agent",title:"Assistente de analytics",sub:"lê só o Gold",detail:"Segue instruções explícitas: nunca estimar, nunca usar benchmark de mercado para preencher lacuna, sempre declarar 'não disponível'."},
-{id:"ch",col:7,kind:"agent",title:"App de chat",sub:"login corporativo",detail:"Canal de conversa. Acesso restrito a quem tem login e permissão."}
+{id:"payroll",col:0,kind:"src",title:"Payroll system",sub:"registry, time tracking",detail:"Employee registry and time tracking for the group's companies. Source of headcount and terminations."},
+{id:"ats",col:0,kind:"src",title:"Recruiting",sub:"requisitions and hires",detail:"Requisition system. Origin of time to hire and internal movement."},
+{id:"talent",col:0,kind:"src",title:"Talent calibration",sub:"list of IDs",detail:"List of high-performing people. It only carries the employee ID, with no person key, which requires a bridge."},
+{id:"survey",col:0,kind:"src",title:"Engagement survey",sub:"manual spreadsheet",detail:"Result per wave, filled in by hand. Not automated yet; it enters as it is."},
+{id:"reviews",col:0,kind:"src",title:"Public reviews",sub:"employer reputation",detail:"Public ratings and comments about the employer, collected monthly."},
+{id:"e_hc",col:1,kind:"etl",title:"etl_headcount.py",sub:"active employees",detail:"Consolidates the monthly employee bases, normalizes text and keys, removes duplicates."},
+{id:"e_ex",col:1,kind:"etl",title:"etl_exits.py",sub:"terminations",detail:"Consolidates cumulative termination reports. Deduplicates by person and date."},
+{id:"e_rq",col:1,kind:"etl",title:"etl_recruiting.py",sub:"requisitions",detail:"Consolidates requisitions and calculates days between opening and closing."},
+{id:"e_tl",col:1,kind:"etl",title:"bridge_talent.py",sub:"ID → person key",detail:"Links the talent list to the registry by employee ID. Records how many IDs had no match."},
+{id:"e_rev",col:1,kind:"etl",title:"collect_reviews",sub:"assisted collection",detail:"Automated monthly collection of public reviews. Writes straight to Gold, since the data is already aggregated."},
+{id:"b_hc",col:2,kind:"bronze",title:"headcount.parquet",sub:"nominal",detail:"One row per person and month. Contains a person key. Never connected to the agent."},
+{id:"b_ex",col:2,kind:"bronze",title:"exits.parquet",sub:"nominal",detail:"One row per termination, with initiative (own or company's) and reason."},
+{id:"b_rq",col:2,kind:"bronze",title:"requisitions.parquet",sub:"no personal data",detail:"One row per requisition, with opening and closing dates."},
+{id:"b_tl",col:2,kind:"bronze",title:"talent.parquet",sub:"nominal",detail:"Talent list already linked to the person key by the bridge."},
+{id:"b_sv",col:2,kind:"bronze",title:"survey.xlsx",sub:"manual, aggregated",detail:"Engagement spreadsheet by company and wave. No ETL: it is filled in and checked manually."},
+{id:"a_hc",col:3,kind:"agg",title:"build_gold_headcount.py",sub:"k = 5 on the fine cut",detail:"Aggregates headcount by company and department and by gender. Applies k-anonymity."},
+{id:"a_to",col:3,kind:"agg",title:"build_gold_turnover.py",sub:"monthly",detail:"Calculates voluntary and involuntary terminations per month, with headcount as the denominator."},
+{id:"a_rq",col:3,kind:"agg",title:"build_gold_hiring.py",sub:"time to hire",detail:"Average days per calendar month of requisition closing."},
+{id:"a_rt",col:3,kind:"agg",title:"build_gold_regrettable.py",sub:"talent who left",detail:"Voluntary exits of people on the talent list, over total voluntary exits."},
+{id:"a_kpi",col:3,kind:"agg",title:"build_kpi_card.py",sub:"master file",detail:"Joins the indicators into a monthly card per company. An indicator without a source comes out as n/a."},
+{id:"g_hc",col:4,kind:"gold",title:"Headcount - Department",sub:".xlsx",detail:"Headcount by month, company and department, with a suppression flag."},
+{id:"g_gd",col:4,kind:"gold",title:"Headcount - Gender (Core)",sub:".xlsx",detail:"Percentage of women, core contracts only. It exists so the agent never uses the generic file for this question."},
+{id:"g_to",col:4,kind:"gold",title:"Turnover - Monthly",sub:".xlsx",detail:"Monthly turnover per company. Months with few terminations are suppressed."},
+{id:"g_tth",col:4,kind:"gold",title:"Time to Hire - Monthly",sub:".xlsx",detail:"Average days to close requisitions, by closing month."},
+{id:"g_rt",col:4,kind:"gold",title:"Regrettable Turnover",sub:".xlsx",detail:"Percentage of voluntary exits that were talent."},
+{id:"g_kpi",col:4,kind:"gold",title:"KPI Card - Monthly",sub:".xlsx · master",detail:"Indicator card per company. It is the file that answers 'what is this month's indicator'."},
+{id:"g_rv",col:4,kind:"gold",title:"Reviews - Summary",sub:".xlsx",detail:"Summary of public reviews by month."},
+{id:"ks",col:5,kind:"agent",title:"Knowledge folder",sub:"cloud · .xlsx only",detail:"Folder where the Gold files are published. Indexing is not instant."},
+{id:"ag",col:6,kind:"agent",title:"Analytics assistant",sub:"reads Gold only",detail:"Follows explicit instructions: never estimate, never use market benchmarks to fill a gap, always declare 'not available'."},
+{id:"ch",col:7,kind:"agent",title:"Chat app",sub:"corporate sign-in",detail:"Conversation channel. Access restricted to people with a sign-in and permission."}
 ],
 edges:[["payroll","e_hc"],["payroll","e_ex"],["ats","e_rq"],["talent","e_tl"],["reviews","e_rev"],["survey","b_sv"],
 ["e_hc","b_hc"],["e_ex","b_ex"],["e_rq","b_rq"],["e_tl","b_tl"],["e_rev","g_rv"],
@@ -199,7 +199,10 @@ edges:[["payroll","e_hc"],["payroll","e_ex"],["ats","e_rq"],["talent","e_tl"],["
 ["g_hc","ks"],["g_gd","ks"],["g_to","ks"],["g_tth","ks"],["g_rt","ks"],["g_kpi","ks"],["g_rv","ks"],
 ["ks","ag"],["ag","ch"]]
 };
-const KIND={src:"Origem",etl:"ETL",bronze:"Bronze",agg:"Agregação",gold:"Gold",agent:"Agente e canal"};
+const KIND={src:"Source",etl:"ETL",bronze:"Bronze",agg:"Aggregation",gold:"Gold",agent:"Agent and channel"};
+const T={none:"none",from:"Receives from:",feeds:"Feeds:",select:"Select a block on the map.",
+  shown:"shown",hidden:"suppressed (k<",demoTitle:"Example · people with a protected characteristic",
+  minK:"minimum k",group:"Department",people:"people"};
 const stage=document.getElementById("stage"),svg=document.getElementById("wires"),detail=document.getElementById("detail");
 const byId=Object.fromEntries(DATA.nodes.map(n=>[n.id,n]));
 const up={},down={};
@@ -241,23 +244,23 @@ function focus(id){
   const s=chain(id);
   stage.querySelectorAll(".node").forEach(n=>{const on=s.has(n.dataset.id);n.classList.toggle("on",on);n.classList.toggle("dim",!on)});
   svg.querySelectorAll(".wire").forEach(w=>{const on=s.has(w.dataset.a)&&s.has(w.dataset.b);w.classList.toggle("on",on);w.classList.toggle("dim",!on)});
-  const n=byId[id],names=l=>(l||[]).map(x=>byId[x].title).join(", ")||"nenhum";
-  detail.innerHTML="<h4>"+n.title+" <small>· "+KIND[n.kind]+"</small></h4><p>"+n.detail+"</p><small><b>Recebe de:</b> "+names(up[id])+" &nbsp;·&nbsp; <b>Alimenta:</b> "+names(down[id])+"</small>"}
+  const n=byId[id],names=l=>(l||[]).map(x=>byId[x].title).join(", ")||T.none;
+  detail.innerHTML="<h4>"+n.title+" <small>· "+KIND[n.kind]+"</small></h4><p>"+n.detail+"</p><small><b>"+T.from+"</b> "+names(up[id])+" &nbsp;·&nbsp; <b>"+T.feeds+"</b> "+names(down[id])+"</small>"}
 
 function clear(){
   stage.querySelectorAll(".node").forEach(n=>n.classList.remove("on","dim"));
   svg.querySelectorAll(".wire").forEach(w=>w.classList.remove("on","dim"));
-  detail.innerHTML="<small>Selecione um bloco do mapa.</small>"}
+  detail.innerHTML="<small>"+T.select+"</small>"}
 
-/* demo de k-anonimato */
-const GROUPS=[["Departamento A",14],["Departamento B",6],["Departamento C",2],["Departamento D",4]];
+/* k-anonymity demo */
+const GROUPS=[["A",14],["B",6],["C",2],["D",4]];
 function kdemo(){
   const box=document.getElementById("kdemo");
-  box.innerHTML="<b>Exemplo · pessoas com uma característica protegida</b>"+
-   GROUPS.map(([g,n],i)=>'<div class="r"><span>'+g+" · "+n+' pessoas</span><span class="chip" id="kc'+i+'"></span></div>').join("")+
-   '<label>k mínimo <input type="range" id="kr" min="1" max="8" value="3"><b id="kv">3</b></label>';
+  box.innerHTML="<b>"+T.demoTitle+"</b>"+
+   GROUPS.map(([g,n],i)=>'<div class="r"><span>'+T.group+" "+g+" · "+n+" "+T.people+'</span><span class="chip" id="kc'+i+'"></span></div>').join("")+
+   '<label>'+T.minK+' <input type="range" id="kr" min="1" max="8" value="3"><b id="kv">3</b></label>';
   const upd=()=>{const k=+document.getElementById("kr").value;document.getElementById("kv").textContent=k;
-    GROUPS.forEach(([g,n],i)=>{const c=document.getElementById("kc"+i);const ok=n>=k;c.textContent=ok?"aparece":"suprimido (k<"+k+")";c.className="chip"+(ok?"":" no")})};
+    GROUPS.forEach(([g,n],i)=>{const c=document.getElementById("kc"+i);const ok=n>=k;c.textContent=ok?T.shown:T.hidden+k+")";c.className="chip"+(ok?"":" no")})};
   document.getElementById("kr").addEventListener("input",upd);upd()}
 
 build();kdemo();

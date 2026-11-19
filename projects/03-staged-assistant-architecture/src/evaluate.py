@@ -1,7 +1,7 @@
-"""Mede em que estágio cada pergunta é resolvida e quantas chamadas de LLM foram gastas.
+"""Measures which stage resolves each question and how many LLM calls were spent.
 
-Uso: py src/evaluate.py [-v]
-Sai com código 1 se algum estágio ou texto esperado não bater.
+Usage: py src/evaluate.py [-v]
+Exits with code 1 if any expected stage or text does not match.
 """
 import csv
 import sys
@@ -25,19 +25,19 @@ def main(verbose: bool = False) -> int:
         a = answer(r["question"], tables, llm=llm, codegen=codegen)
         stages[a.stage] += 1
         ok = float(a.stage) == float(r["expected_stage"]) and r["must_contain"] in a.text
-        print(f"[{'ok' if ok else 'FALHOU'}] estágio {a.stage:<3} {a.kind:<12} {r['question']}")
+        print(f"[{'ok' if ok else 'FAILED'}] stage {a.stage:<3} {a.kind:<12} {r['question']}")
         if verbose or not ok:
             print("      " + a.text.replace("\n", "\n      "))
             if a.code:
-                print("      código: " + a.code.replace("\n", " ; "))
+                print("      code: " + a.code.replace("\n", " ; "))
         if not ok:
             failures.append(r["question"])
 
     total = len(rows)
-    print(f"\n{total} perguntas | chamadas de LLM: {llm.calls} | geração de código: {codegen.calls}")
+    print(f"\n{total} questions | LLM calls: {llm.calls} | code generation: {codegen.calls}")
     for stage in sorted(stages):
-        print(f"  estágio {stage}: {stages[stage]} ({stages[stage] / total:.0%})")
-    print(f"  sem LLM: {sum(stages[s] for s in stages if s in (0, 0.5, 3))} de {total}")
+        print(f"  stage {stage}: {stages[stage]} ({stages[stage] / total:.0%})")
+    print(f"  without LLM: {sum(stages[s] for s in stages if s in (0, 0.5, 3))} of {total}")
     return 1 if failures else 0
 
 

@@ -1,7 +1,8 @@
-"""Estágio 0.5: interpreta o período da pergunta SEM chamar nenhum modelo.
+"""Stage 0.5: interprets the period in the question WITHOUT calling any model.
 
-Resolve "outubro de 2026", "out/26", "2026-10", "mês passado". Se o mês pedido não existe na
-série, devolve 'out_of_range' e o roteador responde na hora, sem gastar uma chamada de LLM.
+Resolves "outubro de 2026", "out/26", "2026-10", "mês passado" (Portuguese month names). If the
+requested month is not in the series, it returns 'out_of_range' and the router answers right away,
+without spending an LLM call. To support another language, extend MONTHS and PREVIOUS.
 """
 import re
 import unicodedata
@@ -19,7 +20,7 @@ PREVIOUS = ("mes passado", "mes anterior")
 
 
 def norm(text: str) -> str:
-    """Minúsculas e sem acento, para comparar texto livre."""
+    """Lowercase and accent-free, to compare free text."""
     return "".join(c for c in unicodedata.normalize("NFKD", text.lower()) if not unicodedata.combining(c))
 
 
@@ -30,9 +31,9 @@ def label(iso: str) -> str:
 
 
 def parse_period(text: str, available: list):
-    """Devolve (iso | None, status). status: 'none' | 'ok' | 'out_of_range'.
+    """Returns (iso | None, status). status: 'none' | 'ok' | 'out_of_range'.
 
-    `available` é a lista ordenada de meses da série, no formato 'AAAA-MM-01'.
+    `available` is the sorted list of the series' months, formatted as 'YYYY-MM-01'.
     """
     nq = norm(text)
     if any(p in nq for p in PREVIOUS):
