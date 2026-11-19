@@ -10,7 +10,7 @@ Padrões de engenharia de dados e de agentes de IA para People Analytics, demons
 |---|---|---|---|
 | 01 | [Linhagem de dados de um agente de IA](projects/01-ai-agent-data-lineage) | Mapa interativo das 8 camadas, da fonte ao chat, com Bronze/Gold e k-anonimato | Pronto |
 | 02 | [Padrão de ETL e consolidação](projects/02-etl-consolidation-pattern) | Pipeline Bronze → Gold executável: consolidação mensal, dedup, ponte ID → chave, supressão de grupos pequenos | Pronto |
-| 03 | [Arquitetura de assistente em estágios](projects/03-staged-assistant-architecture) | Responder barato primeiro (pandas), LLM só quando precisa | Planejado |
+| 03 | [Arquitetura de assistente em estágios](projects/03-staged-assistant-architecture) | Responder barato primeiro (pandas), LLM só quando precisa | Pronto |
 
 ## Como rodar o exemplo
 
@@ -18,6 +18,7 @@ Padrões de engenharia de dados e de agentes de IA para People Analytics, demons
 py synthetic-data/generate.py
 py projects/02-etl-consolidation-pattern/src/consolidate.py
 py projects/02-etl-consolidation-pattern/src/build_gold.py
+py projects/03-staged-assistant-architecture/src/evaluate.py
 ```
 
 Requer Python 3.10+ com `pandas`, `pyarrow` e `openpyxl`. As saídas vão para `out/` (ignorada pelo git).

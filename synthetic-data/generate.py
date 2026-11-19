@@ -98,7 +98,7 @@ def main():
                  p["contract_type"], p["gender"], p["seniority"]]
                 for p in people if p["hire"] <= i and (p["term"] is None or p["term"] > i)]
         with open(OUT / "headcount" / f"headcount_{mdate:%Y-%m}.csv", "w", newline="", encoding="utf-8") as f:
-            w = csv.writer(f)
+            w = csv.writer(f, lineterminator="\n")
             w.writerow(hc_cols)
             w.writerows(rows)
 
@@ -118,25 +118,28 @@ def main():
         # relatório cumulativo: repete parte dos desligamentos do mês anterior
         dupes = [r for r in prev_rows if rng.random() < 0.20]
         with open(OUT / "exits" / f"exits_{mdate:%Y-%m}.csv", "w", newline="", encoding="utf-8") as f:
-            w = csv.writer(f)
+            w = csv.writer(f, lineterminator="\n")
             w.writerow(ex_cols)
             w.writerows(rows + dupes)
         prev_rows = rows
 
     with open(OUT / "talent_calibration.csv", "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f)
+        w = csv.writer(f, lineterminator="\n")
         w.writerow(["employee_id", "cycle"])
         for p in people:
             if p["talent"]:
                 w.writerow([p["employee_id"], "Cycle-1"])
 
+    window_end = month_start(N_MONTHS) - timedelta(days=1)
     req_cols = ["req_id", "company", "department", "opened_date", "closed_date", "source"]
     with open(OUT / "requisitions.csv", "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f)
+        w = csv.writer(f, lineterminator="\n")
         w.writerow(req_cols)
         for r in range(160):
             opened = month_start(rng.randint(0, N_MONTHS - 1)) + timedelta(days=rng.randint(0, 27))
             closed = opened + timedelta(days=rng.randint(12, 75)) if rng.random() < 0.85 else None
+            if closed and closed > window_end:  # fecharia depois do corte dos dados: segue aberta
+                closed = None
             w.writerow([f"R{1000 + r}", pick(rng, COMPANIES), rng.choice(DEPARTMENTS),
                         opened.isoformat(), closed.isoformat() if closed else "",
                         "Internal" if rng.random() < 0.22 else "External"])

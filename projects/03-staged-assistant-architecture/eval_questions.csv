@@ -1,0 +1,19 @@
+question,expected_stage,must_contain
+Qual o headcount da Acme Retail?,0,Acme Retail
+Quantas pessoas tem na Acme Pay em março?,0,mar/2026
+Percentual de mulheres na Acme Tech,0,%
+Qual o turnover da Acme Retail em out/26?,0,out/2026
+Time to hire da Acme Retail,0,dias
+Qual o regrettable turnover da Acme Mobile?,0,Acme Mobile
+Turnover da Acme Retail em novembro de 2025,0,não divulgado
+Qual o time to hire da Acme Tech?,0,Acme Tech
+Mostre o headcount da Acme Logistics no mês passado,0,set/2026
+Qual o engajamento da Acme Retail?,0,não disponível
+Explique o engajamento do grupo,0,não disponível
+Headcount da Acme Retail em janeiro de 2024,0.5,fora da série
+Ranking de turnover por empresa,2,Acme
+Qual empresa tem a maior média de headcount?,2,Acme
+Qual empresa tem o menor percentual de mulheres?,2,Acme
+Explique a variação do turnover da Acme Retail,1,[stub-llm]
+Resuma o headcount do grupo,1,[stub-llm]
+Qual a capital da França?,3,Não encontrei
