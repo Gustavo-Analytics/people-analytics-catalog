@@ -1,10 +1,16 @@
 # People Analytics Catalog
 
+[![CI](https://github.com/Gustavo-Analytics/people-analytics-catalog/actions/workflows/ci.yml/badge.svg)](https://github.com/Gustavo-Analytics/people-analytics-catalog/actions/workflows/ci.yml)
+
 Português: [README.pt-BR.md](README.pt-BR.md)
 
 Data engineering and AI agent patterns for People Analytics, demonstrated with **100% synthetic data** from a fictional company (Acme Retail Group).
 
 > Focus: the **method**. No numbers, names, rules or documents from any employer appear here. See [DISCLAIMER.md](DISCLAIMER.md).
+
+[![Interactive data lineage map: from data source to agent](projects/01-ai-agent-data-lineage/assets/map-en.png)](https://gustavo-analytics.github.io/people-analytics-catalog/projects/01-ai-agent-data-lineage/)
+
+_Interactive map (click to open). Select a block to see everything that feeds it and everything it feeds._
 
 ## Projects
 
@@ -23,7 +29,7 @@ py projects/02-etl-consolidation-pattern/src/build_gold.py
 py projects/03-staged-assistant-architecture/src/evaluate.py
 ```
 
-Requires Python 3.10+ with `pandas`, `pyarrow` and `openpyxl`. Outputs go to `out/` (ignored by git).
+Requires Python 3.10+ (`pip install -r requirements.txt`). On Linux/macOS use `python3` instead of `py`. Outputs go to `out/` (ignored by git).
 Live map: https://gustavo-analytics.github.io/people-analytics-catalog/ (or open `projects/01-ai-agent-data-lineage/index.html` in a browser).
 
 ## Safety of this repository

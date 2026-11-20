@@ -114,6 +114,8 @@
   }
 
   build(); clearFocus(); kdemo(); motion();
+  /* ?capture renders only the map with the master KPI chain selected (used for the README screenshots) */
+  if (/[?&]capture\b/.test(location.search)) { document.documentElement.classList.add("capture"); pinned = "g_kpi"; focus(pinned); }
   let rt; window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(wire, 120); });
   window.addEventListener("load", wire); setTimeout(wire, 250);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(wire);

@@ -154,3 +154,8 @@ footer{padding:30px 6% 50px;color:var(--muted);font-size:12.5px;background:var(-
 .btn.ghost:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.7)}
 .btn:focus-visible{outline:2px solid #5eead4;outline-offset:3px}
 .cover .meta{margin-top:28px}
+/* ---------- capture mode (?capture): only the map section, for README screenshots ---------- */
+.capture nav,.capture .cover,.capture section:not(#mapa),.capture footer{display:none}
+.capture #mapa{padding:36px 40px 40px}
+.capture #mapa .label,.capture #mapa .intro{display:none}
+.capture .scroller{overflow:visible}

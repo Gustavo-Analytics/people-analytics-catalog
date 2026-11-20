@@ -6,6 +6,8 @@ An interactive map (`index.html`) of the path an HR data point takes, from the s
 
 The Poppins font loads from Google Fonts. To avoid that third-party request, remove the font `<link>` in the page and it falls back to the system font.
 
+[![Interactive data lineage map](assets/map-en.png)](index.html)
+
 ## Problem
 
 An AI agent that answers People Analytics questions needs data about people. The same data brings risk: identifying individuals, wrong numbers from the wrong file, and invented answers when information is missing.

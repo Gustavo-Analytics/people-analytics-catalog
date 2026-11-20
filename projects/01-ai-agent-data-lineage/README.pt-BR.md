@@ -4,6 +4,8 @@ English: [README.md](README.md)
 
 Mapa interativo (`index.pt-BR.html`, HTML, CSS e JavaScript puros, sem etapa de build; estilos e motor do mapa ficam em `assets/`). A fonte Poppins vem do Google Fonts; para evitar essa requisição de terceiros, remova o `<link>` da fonte e a página usa a fonte do sistema do caminho de um dado de RH, da fonte até a resposta de um agente no chat.
 
+[![Mapa interativo de linhagem de dados](assets/map-pt.png)](index.pt-BR.html)
+
 ## Problema
 
 Um agente de IA que responde perguntas de People Analytics precisa de dados de pessoas. Os mesmos dados trazem risco: identificação individual, números errados por arquivo incorreto e respostas inventadas quando falta informação.

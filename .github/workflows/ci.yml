@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Synthetic data is reproducible
+        run: |
+          python synthetic-data/generate.py
+          git diff --exit-code -- synthetic-data/sample
+
+      - name: Build Bronze and Gold
+        run: |
+          python projects/02-etl-consolidation-pattern/src/consolidate.py
+          python projects/02-etl-consolidation-pattern/src/build_gold.py
+
+      - name: Unit tests
+        run: python -m unittest discover -s projects/03-staged-assistant-architecture/tests -v
+
+      - name: Evaluation set
+        run: python projects/03-staged-assistant-architecture/src/evaluate.py
+
+      - name: Publication guard (generic checks)
+        run: python tools/guard.py
