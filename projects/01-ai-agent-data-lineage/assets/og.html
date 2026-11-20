@@ -1,0 +1,45 @@
+<!doctype html>
+<!-- Source of the link-preview images (og-en.png, og-pt.png), 1200x630.
+     Render: browser headless screenshot of og.html#en and og.html#pt -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Preview image</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1200px;height:630px;overflow:hidden}
+body{font-family:'Poppins',system-ui,sans-serif;color:#fff;position:relative;
+  background:radial-gradient(60% 90% at 88% 12%,rgba(37,99,235,.42),transparent 62%),radial-gradient(55% 80% at 6% 100%,rgba(14,165,164,.38),transparent 62%),linear-gradient(135deg,#0b1220 0%,#0f2238 55%,#0b3140 100%)}
+.wrap{position:absolute;left:72px;top:0;bottom:0;width:700px;display:flex;flex-direction:column;justify-content:center}
+.kick{font-size:20px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#5eead4;margin-bottom:22px}
+h1{font-size:68px;font-weight:700;text-transform:uppercase;line-height:1.04;letter-spacing:-1px}
+p{margin-top:24px;font-size:26px;line-height:1.45;color:#cbd5e1;max-width:640px}
+.url{position:absolute;left:72px;bottom:46px;font-size:20px;font-weight:600;letter-spacing:1.5px;color:#7dd3c8}
+.tile{position:absolute;right:84px;top:50%;margin-top:-150px;width:300px;height:300px;border-radius:26%;display:grid;place-items:center;
+  background:linear-gradient(135deg,#0ea5a4 0%,#2563eb 55%,#7c3aed 100%);box-shadow:0 30px 80px -20px rgba(0,0,0,.65)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kick" id="kick"></div>
+  <h1 id="h1"></h1>
+  <p id="sub"></p>
+</div>
+<div class="tile">
+  <svg viewBox="0 0 120 120" width="170" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"><path d="M34 34C54 34 50 60 70 60"/><path d="M34 86C54 86 50 60 70 60"/><path d="M70 60H90"/></g><g fill="#fff"><rect x="12" y="23" width="24" height="22" rx="7"/><rect x="12" y="75" width="24" height="22" rx="7"/><rect x="58" y="49" width="24" height="22" rx="7"/><rect x="88" y="49" width="20" height="22" rx="7" opacity=".7"/></g></svg>
+</div>
+<div class="url">gustavo-analytics.github.io/people-analytics-catalog</div>
+<script>
+const L={
+ en:{kick:"People Analytics · Data lineage",h1:"From data source<br>to agent",sub:"Interactive map of an AI agent that only reads anonymized data."},
+ pt:{kick:"People Analytics · Linhagem de dados",h1:"Da fonte de dados<br>ao agente",sub:"Mapa interativo de um agente de IA que lê apenas dados anonimizados."}
+};
+const k=location.hash.replace("#","")==="pt"?"pt":"en";
+document.documentElement.lang=k==="pt"?"pt-BR":"en";
+document.getElementById("kick").textContent=L[k].kick;
+document.getElementById("h1").innerHTML=L[k].h1;
+document.getElementById("sub").textContent=L[k].sub;
+</script>
+</body>
+</html>
