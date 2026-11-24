@@ -31,7 +31,7 @@ source = [
     "tools",
     "synthetic-data",
 ]
-omit = ["*/tests/*", "tools/run_tests.py"]
+omit = ["*/tests/*", "tools/run_tests.py", "tools/mutation_check.py"]
 
 [tool.coverage.report]
 fail_under = 95
