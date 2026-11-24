@@ -92,6 +92,7 @@
       "<label>" + T.minK + ' <input type="range" id="kr" min="1" max="8" value="3"><b id="kv">3</b></label>';
     const upd = () => {
       const k = +document.getElementById("kr").value; document.getElementById("kv").textContent = k;
+      document.getElementById("kr").style.setProperty("--p", ((k - 1) / 7 * 100).toFixed(2) + "%");
       GROUPS.forEach(([g, n], i) => { const c = document.getElementById("kc" + i), ok = n >= k; c.textContent = ok ? T.shown : T.hidden + k + ")"; c.className = "chip" + (ok ? "" : " no"); });
     };
     document.getElementById("kr").addEventListener("input", upd); upd();
