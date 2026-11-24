@@ -6,5 +6,5 @@ Português: [DISCLAIMER.pt-BR.md](DISCLAIMER.pt-BR.md)
   No real person, company, number or result is included. The generated CPF numbers are **intentionally invalid** (wrong check digit).
 - The companies, systems, files and metrics mentioned (for example "Acme Retail") are **fictional**.
 - The content describes **generic technical patterns** for data engineering and AI agents in People Analytics.
-  It does not reproduce code, business rules, indicator definitions or documentation from any employer, current or former.
+  It does not reproduce data, code, documents or names from any employer, current or former. The techniques shown (for example medallion layers and k-anonymity) are common practice in data engineering and privacy, adapted to a fictional company.
 - This repository does not represent the position of any organization.

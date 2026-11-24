@@ -74,12 +74,14 @@
     const n = byId[id], names = l => (l || []).map(x => byId[x].title).join(", ") || T.none;
     detail.innerHTML = '<div class="meta">' + KIND[n.kind] + "</div><h3>" + n.title + "</h3><p>" + n.detail + "</p>" +
       '<div class="chain"><b>' + T.from + "</b> " + names(up[id]) + " &nbsp;·&nbsp; <b>" + T.feeds + "</b> " + names(down[id]) + "</div>";
+    detail.classList.add("has-sel");
   }
 
   function clearFocus() {
     stage.querySelectorAll(".node").forEach(n => n.classList.remove("sel", "dim"));
     svg.querySelectorAll(".w,.dot").forEach(w => w.classList.remove("hot", "dim"));
     detail.innerHTML = '<div class="idle">' + T.select + "</div>";
+    detail.classList.remove("has-sel");
   }
 
   /* k-anonymity demo */
@@ -113,6 +115,13 @@
     requestAnimationFrame(step);
   }
 
+  /* touch devices have no hover and no Esc key: adapt the hints */
+  const coarse = window.matchMedia && matchMedia("(hover: none), (pointer: coarse)").matches;
+  if (coarse) {
+    if (T.selectTouch) T.select = T.selectTouch;
+    const hint = document.querySelector(".toolbar .hint");
+    if (hint && T.hintTouch) hint.textContent = T.hintTouch;
+  }
   build(); clearFocus(); kdemo(); motion();
   /* ?capture renders only the map with the master KPI chain selected (used for the README screenshots) */
   if (/[?&]capture\b/.test(location.search)) { document.documentElement.classList.add("capture"); pinned = "g_kpi"; focus(pinned); }

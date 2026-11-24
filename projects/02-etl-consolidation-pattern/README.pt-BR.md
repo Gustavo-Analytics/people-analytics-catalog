@@ -22,7 +22,7 @@ py projects/02-etl-consolidation-pattern/src/consolidate.py
 py projects/02-etl-consolidation-pattern/src/build_gold.py
 ```
 
-Saída esperada do Bronze (semente fixa; as mensagens do script estão em inglês): `headcount 4890 linhas`, `exits 125 -> 106 (19 duplicadas removidas)`, `talentos 36 linhas, 0 sem correspondência`.
+Saída esperada do Bronze (semente fixa; as mensagens do script estão em inglês): `headcount: 4890 -> 4890 rows (0 duplicates removed)`, `exits: 125 -> 106 rows (19 duplicates removed)`, `talent: 36 rows, 0 without a match in headcount`.
 
 ## O que cada etapa resolve
 

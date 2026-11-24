@@ -159,3 +159,12 @@ footer{padding:30px 6% 50px;color:var(--muted);font-size:12.5px;background:var(-
 .capture #mapa{padding:36px 40px 40px}
 .capture #mapa .label,.capture #mapa .intro{display:none}
 .capture .scroller{overflow:visible}
+/* ---------- phones: detail card pinned to the bottom, tighter nav, larger tap targets ---------- */
+section#mapa{overflow:visible}
+@media(max-width:760px){
+  #detail.has-sel{position:sticky;bottom:10px;z-index:60;margin-top:14px;padding:14px 18px 14px 24px;min-height:0;max-height:38vh;overflow:auto;box-shadow:0 -8px 30px -10px rgba(11,18,32,.4),0 14px 34px -22px rgba(11,18,32,.3)}
+  #detail.has-sel h3{font-size:15px}
+  #detail.has-sel p{font-size:12.5px}
+  nav a{padding:8px 2px}
+}
+@media(max-width:560px){nav{position:static}}

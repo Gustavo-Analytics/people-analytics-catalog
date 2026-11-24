@@ -6,7 +6,7 @@ Português: [README.pt-BR.md](README.pt-BR.md)
 
 Data engineering and AI agent patterns for People Analytics, demonstrated with **100% synthetic data** from a fictional company (Acme Retail Group).
 
-> Focus: the **method**. No numbers, names, rules or documents from any employer appear here. See [DISCLAIMER.md](DISCLAIMER.md).
+> Focus: the **method**. No data, code, documents or names from any employer appear here. See [DISCLAIMER.md](DISCLAIMER.md).
 
 [![Interactive data lineage map: from data source to agent](projects/01-ai-agent-data-lineage/assets/map-en.png)](https://gustavo-analytics.github.io/people-analytics-catalog/projects/01-ai-agent-data-lineage/)
 

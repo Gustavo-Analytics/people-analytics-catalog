@@ -6,7 +6,7 @@ English: [README.md](README.md)
 
 Padrões de engenharia de dados e de agentes de IA para People Analytics, demonstrados com **dados 100% sintéticos** de uma empresa fictícia (Acme Retail Group).
 
-> Foco: o **método**. Nenhum número, nome, regra ou documento de empregador aparece aqui. Ver [DISCLAIMER.pt-BR.md](DISCLAIMER.pt-BR.md).
+> Foco: o **método**. Nenhum dado, código, documento ou nome de empregador aparece aqui. Ver [DISCLAIMER.pt-BR.md](DISCLAIMER.pt-BR.md).
 
 [![Mapa interativo de linhagem de dados: da fonte de dados ao agente](projects/01-ai-agent-data-lineage/assets/map-pt.png)](https://gustavo-analytics.github.io/people-analytics-catalog/projects/01-ai-agent-data-lineage/index.pt-BR.html)
 
