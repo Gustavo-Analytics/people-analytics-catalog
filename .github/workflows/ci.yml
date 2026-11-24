@@ -49,5 +49,10 @@ jobs:
       - name: Evaluation set
         run: python projects/03-staged-assistant-architecture/src/evaluate.py
 
+      - name: SQL layer (queries and privacy audit)
+        run: |
+          python projects/04-sql-analytics-layer/src/warehouse.py turnover_ranking
+          python projects/04-sql-analytics-layer/src/warehouse.py privacy_audit
+
       - name: Publication guard (generic checks)
         run: python tools/guard.py

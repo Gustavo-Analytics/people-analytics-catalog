@@ -19,6 +19,7 @@ _Interactive map (click to open). Select a block to see everything that feeds it
 | 01 | [Data lineage of an AI agent](projects/01-ai-agent-data-lineage) | Interactive map of the 8 layers, from source to chat, with Bronze/Gold and k-anonymity | Done |
 | 02 | [ETL and consolidation pattern](projects/02-etl-consolidation-pattern) | Runnable Bronze → Gold pipeline: monthly consolidation, dedup, ID → key bridge, small-group suppression | Done |
 | 03 | [Staged assistant architecture](projects/03-staged-assistant-architecture) | Answer cheap first (pandas), call an LLM only when needed | Done |
+| 04 | [SQL analytics layer](projects/04-sql-analytics-layer) | The same Gold queried with SQL in DuckDB: governed views, window functions, a privacy audit written in SQL | Done |
 
 ## Run the example
 
@@ -27,6 +28,7 @@ py synthetic-data/generate.py
 py projects/02-etl-consolidation-pattern/src/consolidate.py
 py projects/02-etl-consolidation-pattern/src/build_gold.py
 py projects/03-staged-assistant-architecture/src/evaluate.py
+py projects/04-sql-analytics-layer/src/warehouse.py turnover_ranking
 ```
 
 Requires Python 3.10+ (`pip install -r requirements.txt`). On Linux/macOS use `python3` instead of `py`. Outputs go to `out/` (ignored by git).
@@ -43,9 +45,9 @@ mypy $(git ls-files '*.py')                           # types (bash; on PowerShe
 py tools/mutation_check.py                            # do the tests catch bugs?
 ```
 
-- **Tests** cover the ETL (key normalization, deduplication, k-anonymity, standardized views, `n/a`, no person column in Gold), the staged assistant, the data generator and the publication guard. One test is property-based (`hypothesis`): it checks the k-anonymity rule for any list of counts and any k.
+- **Tests** cover the ETL (key normalization, deduplication, k-anonymity, standardized views, `n/a`, no person column in Gold), the staged assistant, the SQL layer, the data generator and the publication guard. One test is property-based (`hypothesis`): it checks the k-anonymity rule for any list of counts and any k.
 - **Lint and types** run in CI on every Python file. Every public function needs a docstring and type annotations, and CI fails otherwise.
-- **Do the tests catch bugs?** `tools/mutation_check.py` injects 12 deliberate defects into a copy of the repository, one at a time (for example: suppressing groups of exactly k, publishing turnover on the wrong scale, letting an indicator without a source reach the LLM) and checks that the tests fail for each. Today it catches all 12. It is a small hand-picked set, not a full mutation-testing tool.
+- **Do the tests catch bugs?** `tools/mutation_check.py` injects 14 deliberate defects into a copy of the repository, one at a time (for example: suppressing groups of exactly k, publishing turnover on the wrong scale, letting an indicator without a source reach the LLM) and checks that the tests fail for each. Today it catches all 14. It is a small hand-picked set, not a full mutation-testing tool.
 
 ## Safety of this repository
 

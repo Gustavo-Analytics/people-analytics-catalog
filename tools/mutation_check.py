@@ -19,6 +19,7 @@ IGNORE = shutil.ignore_patterns(".git", ".venv", "out", "__pycache__", ".mypy_ca
 
 ETL = "projects/02-etl-consolidation-pattern/src"
 ASSISTANT = "projects/03-staged-assistant-architecture/src"
+SQL = "projects/04-sql-analytics-layer"
 
 
 class Mutant(NamedTuple):
@@ -63,6 +64,12 @@ MUTANTS = [
            "d2 = dv(d + [d1]) % 10", "synthetic CPFs become valid"),
     Mutant("tools/guard.py", "if len(set(d)) == 1:", "if False:",
            "a CPF with repeated digits is accepted as valid"),
+    Mutant(f"{SQL}/sql/views.sql", "FROM gold.headcount_dept WHERE NOT suppressed AND headcount < 5",
+           "FROM gold.headcount_dept WHERE NOT suppressed AND headcount < 4",
+           "the SQL privacy audit accepts departments of 4 people"),
+    Mutant(f"{SQL}/sql/queries/turnover_ranking.sql", "rank() OVER (ORDER BY turnover_pct DESC)",
+           "rank() OVER (ORDER BY turnover_pct ASC)",
+           "the SQL turnover ranking is upside down"),
 ]
 
 

@@ -28,6 +28,7 @@ data_file = "out/.coverage"
 source = [
     "projects/02-etl-consolidation-pattern/src",
     "projects/03-staged-assistant-architecture/src",
+    "projects/04-sql-analytics-layer/src",
     "tools",
     "synthetic-data",
 ]

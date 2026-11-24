@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SUITES = [
     ROOT / "projects" / "02-etl-consolidation-pattern" / "tests",
     ROOT / "projects" / "03-staged-assistant-architecture" / "tests",
+    ROOT / "projects" / "04-sql-analytics-layer" / "tests",
     ROOT / "synthetic-data" / "tests",
     ROOT / "tools" / "tests",
 ]
