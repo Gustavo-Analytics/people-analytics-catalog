@@ -43,6 +43,17 @@ Saída esperada do Bronze (semente fixa; as mensagens do script estão em inglê
 | Indicador sem fonte | `n/a` no card mestre, nunca estimado |
 | Reconciliação | `assert`: headcount do card = Bronze; nenhuma coluna de pessoa no Gold |
 
+## Testes
+
+```bash
+py -m unittest discover -s projects/02-etl-consolidation-pattern/tests
+```
+
+- **Bronze** (`test_consolidate.py`): a chave mantém ou recupera o zero à esquerda, a formatação é removida, a chave gravada como número e a preenchida viram a mesma chave, relatórios cumulativos repetidos colapsam, a versão mais recente de um mês vence, e a ponte ID → chave não duplica linhas e deixa vazios os IDs sem correspondência.
+- **Gold** (`test_build_gold.py`): contagens abaixo de k são esvaziadas e sinalizadas (um teste baseado em propriedade confere isso para quaisquer contagens e qualquer k), a visão padronizada de gênero exclui estagiários e aprendizes, o corte fino por departamento usa o K maior, turnover e time to hire são calculados e suprimidos como documentado, indicadores sem fonte saem como `n/a`, nenhuma coluna de pessoa chega ao Gold, e o `main()` para se uma chegar.
+
+Os testes usam tabelas pequenas em memória e só escrevem em pastas temporárias.
+
 ## Limitações conhecidas
 
 - **Supressão complementar.** Suprimir uma célula não basta se o total do grupo é publicado: a subtração a revela. Aqui o corte fino não publica total.
@@ -54,5 +65,6 @@ Saída esperada do Bronze (semente fixa; as mensagens do script estão em inglê
 ```
 src/consolidate.py   Bronze
 src/build_gold.py    Gold + verificações
+tests/               testes do Bronze e do Gold
 out/                 gerado, ignorado pelo git
 ```

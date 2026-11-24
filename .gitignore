@@ -17,3 +17,10 @@ __pycache__/
 
 # Lista local de termos proibidos: contém nomes reais, NUNCA publicar
 tools/*.local.txt
+
+# Caches e saídas das ferramentas de qualidade
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+htmlcov/

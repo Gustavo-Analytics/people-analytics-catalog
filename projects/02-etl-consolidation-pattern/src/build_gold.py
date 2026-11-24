@@ -20,6 +20,7 @@ NA = "n/a"
 
 
 def suppress(df: pd.DataFrame, count_col: str, k: int) -> pd.DataFrame:
+    """Returns a copy where counts below `k` become empty and the `suppressed` flag is set."""
     out = df.copy()
     mask = out[count_col] < k
     out["suppressed"] = mask
@@ -27,14 +28,16 @@ def suppress(df: pd.DataFrame, count_col: str, k: int) -> pd.DataFrame:
     return out
 
 
-def write(name: str, sheets: dict):
+def write(name: str, sheets: dict[str, pd.DataFrame]) -> None:
+    """Writes one Gold workbook, with one sheet per entry of `sheets`."""
     GOLD.mkdir(parents=True, exist_ok=True)
     with pd.ExcelWriter(GOLD / f"{name}.xlsx") as xw:
         for sheet, df in sheets.items():
             df.to_excel(xw, sheet_name=sheet, index=False)
 
 
-def headcount_by_department(hc):
+def headcount_by_department(hc: pd.DataFrame) -> None:
+    """Headcount by month, company and department, with the finer cut's larger K."""
     g = hc.groupby(["month", "company", "department"]).size().reset_index(name="headcount")
     write("Headcount - Department", {
         "data": suppress(g, "headcount", K_DETAILED),
@@ -45,7 +48,8 @@ def headcount_by_department(hc):
     })
 
 
-def headcount_gender_core(hc):
+def headcount_gender_core(hc: pd.DataFrame) -> None:
+    """Headcount and share of women for core contracts (CLT and PJ) only."""
     core = hc[hc["contract_type"].isin(["CLT", "PJ"])]  # standardized view: no interns/apprentices
     g = core.groupby(["month", "company"]).agg(
         headcount=("employee_id", "size"),
@@ -56,7 +60,8 @@ def headcount_gender_core(hc):
     write("Headcount - Gender (Core)", {"data": g})
 
 
-def turnover_monthly(hc, ex):
+def turnover_monthly(hc: pd.DataFrame, ex: pd.DataFrame) -> pd.DataFrame:
+    """Monthly terminations (voluntary and involuntary) over headcount, per company."""
     ex = ex.assign(month=ex["exit_date"].dt.to_period("M").dt.to_timestamp().dt.strftime("%Y-%m-%d"))
     e = ex.groupby(["month", "company", "initiative"]).size().unstack(fill_value=0).reset_index()
     for c in ("Employee", "Company"):
@@ -74,7 +79,8 @@ def turnover_monthly(hc, ex):
     return t
 
 
-def time_to_hire(rq):
+def time_to_hire(rq: pd.DataFrame) -> pd.DataFrame:
+    """Average days to close requisitions, by calendar month of closing and company."""
     done = rq.dropna(subset=["days_to_close"]).copy()
     done["closed_month"] = done["closed_date"].dt.to_period("M").dt.to_timestamp().dt.strftime("%Y-%m-%d")
     g = done.groupby(["closed_month", "company"]).agg(
@@ -86,7 +92,7 @@ def time_to_hire(rq):
     return g
 
 
-def regrettable_turnover(ex, tl):
+def regrettable_turnover(ex: pd.DataFrame, tl: pd.DataFrame) -> pd.DataFrame:
     """Talent who left on their own initiative / total voluntary exits (ID -> key bridge)."""
     vol = ex[ex["initiative"] == "Employee"]
     talent_keys = set(tl["person_key"].dropna())
@@ -99,7 +105,7 @@ def regrettable_turnover(ex, tl):
     return g
 
 
-def kpi_card(hc, turnover, tth, regret):
+def kpi_card(hc: pd.DataFrame, turnover: pd.DataFrame, tth: pd.DataFrame, regret: pd.DataFrame) -> pd.DataFrame:
     """Master file: one card per company for the last month. The agent reads this, not the support files."""
     last = hc["month"].max()
     base = hc[hc["month"] == last].groupby("company").agg(
@@ -117,7 +123,8 @@ def kpi_card(hc, turnover, tth, regret):
     return card
 
 
-def main():
+def main() -> None:
+    """Builds every Gold file from Bronze and checks that Gold reconciles and leaks no person column."""
     hc = pd.read_parquet(BRONZE / "headcount.parquet")
     ex = pd.read_parquet(BRONZE / "exits.parquet")
     rq = pd.read_parquet(BRONZE / "requisitions.parquet")

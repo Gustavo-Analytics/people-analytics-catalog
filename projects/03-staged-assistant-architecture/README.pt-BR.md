@@ -49,7 +49,7 @@ py -m unittest discover -s projects/03-staged-assistant-architecture/tests
 | 2 (código gerado) | 3 |
 | 3 (fallback) | 1 |
 
-13 de 18 foram resolvidas **sem nenhuma chamada de LLM**. Os 16 testes unitários e as 18 perguntas passam.
+13 de 18 foram resolvidas **sem nenhuma chamada de LLM**. Os 37 testes unitários deste projeto e as 18 perguntas passam.
 
 **Como ler esse número:** as perguntas foram escritas junto com o roteador e o LLM é um substituto. A avaliação prova que o **roteamento** se comporta como projetado, não que um modelo real responda bem. Com um modelo real, a distribuição dependeria das perguntas de quem usa.
 
@@ -97,6 +97,6 @@ src/sandbox.py     estágio 2: validação e execução do código gerado
 src/assistant.py   roteador e estágios 0, 1, 2 e 3
 src/stubs.py       LLM e gerador de código de mentira, para rodar offline
 src/evaluate.py    mede estágio por pergunta e chamadas de LLM
-tests/             16 testes das regras de ouro, com tabelas em memória
+tests/             37 testes: regras de ouro, sandbox, leitura das tabelas e avaliador
 eval_questions.csv conjunto de avaliação
 ```

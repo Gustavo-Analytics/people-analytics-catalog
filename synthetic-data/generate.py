@@ -12,6 +12,7 @@ import csv
 import random
 from datetime import date, timedelta
 from pathlib import Path
+from typing import Any
 
 SEED = 42
 OUT = Path(__file__).resolve().parent / "sample"
@@ -27,7 +28,8 @@ SENIORITY = ["Junior", "Mid", "Senior", "Lead", "Manager"]
 REASONS = ["Better offer", "Career change", "Relocation", "Restructuring", "Performance"]
 
 
-def pick(rng, pairs):
+def pick(rng: random.Random, pairs: list[tuple[str, float]]) -> str:
+    """Draws one value from (value, weight) pairs; the weights are cumulative probabilities."""
     r, acc = rng.random(), 0.0
     for value, w in pairs:
         acc += w
@@ -36,10 +38,10 @@ def pick(rng, pairs):
     return pairs[-1][0]
 
 
-def fake_cpf(rng, used):
+def fake_cpf(rng: random.Random, used: set[str]) -> str:
     """Synthetic CPF with a WRONG check digit on purpose (never a real CPF)."""
-    def dv(nums):
-        s = sum(n * w for n, w in zip(nums, range(len(nums) + 1, 1, -1)))
+    def dv(nums: list[int]) -> int:
+        s = sum(n * w for n, w in zip(nums, range(len(nums) + 1, 1, -1), strict=True))
         r = (s * 10) % 11
         return 0 if r == 10 else r
 
@@ -55,19 +57,22 @@ def fake_cpf(rng, used):
             return cpf
 
 
-def month_start(i):
+def month_start(i: int) -> date:
+    """First day of the i-th month of the series (0 is FIRST_MONTH)."""
     y, m = FIRST_MONTH
     total = (m - 1) + i
     return date(y + total // 12, total % 12 + 1, 1)
 
 
-def main():
+def main() -> None:
+    """Writes the synthetic monthly files, the talent list and the requisitions under `sample/`."""
     rng = random.Random(SEED)
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "headcount").mkdir(exist_ok=True)
     (OUT / "exits").mkdir(exist_ok=True)
 
-    used, people = set(), []
+    used: set[str] = set()
+    people: list[dict[str, Any]] = []
     for n in range(520):
         hire = rng.randint(-30, N_MONTHS - 1)
         term = None
@@ -103,7 +108,7 @@ def main():
             w.writerows(rows)
 
     ex_cols = ["person_key", "employee_id", "company", "exit_date", "initiative", "reason"]
-    prev_rows = []
+    prev_rows: list[list[Any]] = []
     for i in range(N_MONTHS):
         mdate = month_start(i)
         rows = []

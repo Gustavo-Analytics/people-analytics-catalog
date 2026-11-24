@@ -19,7 +19,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 TERMS_FILE = ROOT / "tools" / "guard_terms.local.txt"
 
-SKIP_DIRS = {".git", "out", "__pycache__", ".venv", "node_modules"}
+SKIP_DIRS = {".git", "out", "__pycache__", ".venv", "node_modules", ".mypy_cache", ".ruff_cache", ".hypothesis"}
 BLOCKED_EXT = {".parquet", ".xlsx", ".xlsb", ".xlsm", ".pbix", ".pptx", ".pem", ".key", ".db", ".sqlite"}
 TEXT_EXT = {".md", ".txt", ".py", ".csv", ".html", ".json", ".yml", ".yaml", ".js", ".css", ".sql", ".ps1", ".toml", ""}
 MAX_BYTES = 1_500_000
@@ -30,21 +30,26 @@ RE_GUID = re.compile(r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f
 RE_B64 = re.compile(r"data:[\w/+.-]+;base64,[A-Za-z0-9+/=]{2000,}")
 RE_PATH = re.compile(r"[A-Za-z]:\\Users\\|One" r"Drive|share" r"point\.com|\\\\[\w.-]+\\", re.I)
 
+Finding = tuple[str, int, str]
+
 
 def cpf_is_valid(digits: str) -> bool:
+    """True if the 11 digits pass the CPF check-digit rule (and are not all equal)."""
     d = [int(c) for c in digits]
     if len(set(d)) == 1:
         return False
     for n in (9, 10):
-        s = sum(v * w for v, w in zip(d[:n], range(n + 1, 1, -1)))
+        s = sum(v * w for v, w in zip(d[:n], range(n + 1, 1, -1), strict=True))
         r = (s * 10) % 11
         if (0 if r == 10 else r) != d[n]:
             return False
     return True
 
 
-def load_terms():
-    terms, allow = [], set()
+def load_terms() -> tuple[list[str], set[str]]:
+    """Reads the local list of forbidden terms and the e-mail addresses allowed with 'allow:'."""
+    terms: list[str] = []
+    allow: set[str] = set()
     if not TERMS_FILE.exists():
         print("WARNING: tools/guard_terms.local.txt does not exist; only the generic checks run.")
         return terms, allow
@@ -59,7 +64,8 @@ def load_terms():
     return terms, allow
 
 
-def candidate_files(staged: bool):
+def candidate_files(staged: bool) -> list[Path]:
+    """Files to scan: the staged ones (git) or every file under the repository root."""
     if staged:
         out = subprocess.run(["git", "diff", "--cached", "--name-only", "--diff-filter=ACMR"],
                              cwd=ROOT, capture_output=True, text=True, check=True).stdout
@@ -68,11 +74,12 @@ def candidate_files(staged: bool):
             if p.is_file() and not (set(p.relative_to(ROOT).parts) & SKIP_DIRS)]
 
 
-def scan(path: Path, terms, allow):
+def scan(path: Path, terms: list[str], allow: set[str]) -> list[Finding]:
+    """Returns the findings (relative path, line, reason) for one file."""
     rel = path.relative_to(ROOT).as_posix()
     if rel == "tools/guard_terms.local.txt":
         return []
-    problems = []
+    problems: list[Finding] = []
     if path.suffix.lower() in BLOCKED_EXT:
         problems.append((rel, 0, f"blocked extension ({path.suffix})"))
     try:
@@ -116,11 +123,12 @@ def scan(path: Path, terms, allow):
     return problems
 
 
-def main():
+def main() -> None:
+    """Scans the repository (or the staged files) and exits with code 1 if anything is found."""
     staged = "--staged" in sys.argv
     terms, allow = load_terms()
     files = candidate_files(staged)
-    found = []
+    found: list[Finding] = []
     for f in files:
         found.extend(scan(f, terms, allow))
     if found:

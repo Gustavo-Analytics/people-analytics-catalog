@@ -23,6 +23,7 @@ def norm_key(s: pd.Series) -> pd.Series:
 
 
 def read_many(folder: Path) -> pd.DataFrame:
+    """Reads every CSV of a folder as text and records the origin file in `source_file`."""
     frames = []
     for f in sorted(folder.glob("*.csv")):
         df = pd.read_csv(f, dtype=str)
@@ -32,6 +33,7 @@ def read_many(folder: Path) -> pd.DataFrame:
 
 
 def build_headcount() -> pd.DataFrame:
+    """Consolidates the monthly headcount files; one row per employee and month."""
     df = read_many(SAMPLE / "headcount")
     df["person_key"] = norm_key(df["person_key"])
     for c in ["company", "department", "contract_type", "gender", "seniority"]:
@@ -43,6 +45,7 @@ def build_headcount() -> pd.DataFrame:
 
 
 def build_exits() -> pd.DataFrame:
+    """Consolidates the termination reports, dropping the repeats of cumulative reports."""
     df = read_many(SAMPLE / "exits")
     df["person_key"] = norm_key(df["person_key"])
     df["exit_date"] = pd.to_datetime(df["exit_date"])
@@ -54,6 +57,7 @@ def build_exits() -> pd.DataFrame:
 
 
 def build_requisitions() -> pd.DataFrame:
+    """Reads the requisitions and computes the days between opening and closing."""
     df = pd.read_csv(SAMPLE / "requisitions.csv", dtype=str)
     df["opened_date"] = pd.to_datetime(df["opened_date"])
     df["closed_date"] = pd.to_datetime(df["closed_date"])
@@ -71,7 +75,8 @@ def build_talent_bridge(headcount: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def main():
+def main() -> None:
+    """Builds the four Bronze tables and writes them as parquet."""
     BRONZE.mkdir(parents=True, exist_ok=True)
     hc = build_headcount()
     ex = build_exits()

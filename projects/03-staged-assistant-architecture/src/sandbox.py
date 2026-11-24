@@ -7,6 +7,7 @@ with limits.
 """
 import ast
 import builtins
+from typing import Any
 
 BLOCKED_NAMES = {"open", "exec", "eval", "compile", "__import__", "getattr", "setattr", "delattr",
                  "globals", "locals", "vars", "input", "breakpoint", "help", "dir", "type"}
@@ -19,10 +20,11 @@ SAFE_BUILTINS = {n: getattr(builtins, n)
 
 
 class SandboxError(Exception):
-    pass
+    """Raised when generated code is rejected by validation or fails while running."""
 
 
-def validate(code: str) -> ast.AST:
+def validate(code: str) -> ast.Module:
+    """Parses `code` and rejects imports, global scope, blocked names and blocked attributes."""
     try:
         tree = ast.parse(code)
     except SyntaxError as e:
@@ -39,10 +41,10 @@ def validate(code: str) -> ast.AST:
     return tree
 
 
-def run_sandboxed(code: str, tables: dict):
+def run_sandboxed(code: str, tables: dict[str, Any]) -> Any:
     """Runs `code` with `tables` (copies of the Gold DataFrames) and returns the `result` variable."""
     tree = validate(code)
-    scope = dict(tables)
+    scope: dict[str, Any] = dict(tables)
     scope["__builtins__"] = SAFE_BUILTINS
     try:
         exec(compile(tree, "<generated>", "exec"), scope)

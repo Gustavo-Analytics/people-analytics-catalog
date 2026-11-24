@@ -1,0 +1,39 @@
+# Tooling configuration. The repository is a set of scripts, not an installable package.
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+# E/F: pycodestyle and pyflakes | I: import order | B: bugbear | UP: modern syntax
+# D103: every public function must have a docstring
+select = ["E", "F", "I", "B", "UP", "D103"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["D103"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+warn_unused_ignores = true
+check_untyped_defs = true
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = ["test_assistant", "test_consolidate", "test_build_gold", "test_guard", "test_generate", "test_evaluate"]
+disallow_untyped_defs = false
+
+[tool.coverage.run]
+data_file = "out/.coverage"
+source = [
+    "projects/02-etl-consolidation-pattern/src",
+    "projects/03-staged-assistant-architecture/src",
+    "tools",
+    "synthetic-data",
+]
+omit = ["*/tests/*", "tools/run_tests.py"]
+
+[tool.coverage.report]
+fail_under = 95
+show_missing = true
+skip_covered = true

@@ -43,6 +43,17 @@ Expected Bronze output (fixed seed): `headcount: 4890 -> 4890 rows`, `exits: 125
 | Indicator without a source | `n/a` in the master card, never estimated |
 | Reconciliation | `assert`: card headcount = Bronze; no person column in Gold |
 
+## Tests
+
+```bash
+py -m unittest discover -s projects/02-etl-consolidation-pattern/tests
+```
+
+- **Bronze** (`test_consolidate.py`): a key keeps or regains its leading zero, formatting is stripped, number-style and padded keys become the same key, repeated cumulative reports collapse, the later version of a month wins, and the ID → key bridge does not duplicate rows and leaves unmatched IDs empty.
+- **Gold** (`test_build_gold.py`): counts below k are emptied and flagged (a property-based test checks this for any counts and any k), the standardized gender view excludes interns and apprentices, the finer department cut uses the larger K, turnover and time to hire are computed and suppressed as documented, indicators without a source come out as `n/a`, no person column reaches Gold, and `main()` stops if one does.
+
+The tests use small in-memory tables and write only to temporary folders.
+
 ## Known limitations
 
 - **Complementary suppression.** Suppressing a cell is not enough if the group total is published: subtraction reveals it. Here the fine cut publishes no total.
@@ -54,5 +65,6 @@ Expected Bronze output (fixed seed): `headcount: 4890 -> 4890 rows`, `exits: 125
 ```
 src/consolidate.py   Bronze
 src/build_gold.py    Gold + checks
+tests/               tests of Bronze and Gold
 out/                 generated, ignored by git
 ```

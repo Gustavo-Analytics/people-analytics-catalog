@@ -51,7 +51,7 @@ py -m unittest discover -s projects/03-staged-assistant-architecture/tests
 | 2 (generated code) | 3 |
 | 3 (fallback) | 1 |
 
-13 of 18 were resolved with **no LLM call at all**. The 16 unit tests and the 18 questions pass.
+13 of 18 were resolved with **no LLM call at all**. The 37 unit tests of this project and the 18 questions pass.
 
 **How to read this number:** the questions were written together with the router, and the LLM is a stand-in. The evaluation shows that the **routing** behaves as designed, not that a real model answers well. With a real model, the distribution would depend on the questions its users ask.
 
@@ -99,6 +99,6 @@ src/sandbox.py     stage 2: validation and execution of generated code
 src/assistant.py   router and stages 0, 1, 2 and 3
 src/stubs.py       fake LLM and code generator, to run offline
 src/evaluate.py    measures stage per question and LLM calls
-tests/             16 tests of the golden rules, with in-memory tables
+tests/             37 tests: golden rules, sandbox, table loading and the evaluation runner
 eval_questions.csv evaluation set
 ```

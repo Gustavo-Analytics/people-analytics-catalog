@@ -15,13 +15,18 @@ Language: the questions, keywords and answer strings are in Portuguese. The rout
 language-independent; supporting another language means adding keyword lists and answer strings.
 """
 import re
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
-
 from periods import label, norm, parse_period
 from sandbox import SandboxError, run_sandboxed
+
+Tables = dict[str, pd.DataFrame]
+LLM = Callable[[str], str]
+CodeGen = Callable[[str, dict[str, list[str]]], str]
 
 GOLD_DIR = Path(__file__).resolve().parents[2] / "02-etl-consolidation-pattern" / "out" / "gold"
 FILES = {"headcount": "Headcount - Gender (Core).xlsx", "turnover": "Turnover - Monthly.xlsx",
@@ -30,7 +35,7 @@ FILES = {"headcount": "Headcount - Gender (Core).xlsx", "turnover": "Turnover - 
 CONTEXT_BUDGET = 1500  # characters sent to the LLM
 
 # Order matters: most specific first ("regrettable turnover" contains "turnover").
-METRICS = {
+METRICS: dict[str, dict[str, Any]] = {
     "regret": {"title": "Regrettable turnover", "table": "regret", "value": "regrettable_pct",
                "fmt": "pct", "monthly": False,
                "words": ["regrettable", "talentos que sairam", "perda de talentos", "saida de talentos"]},
@@ -63,14 +68,17 @@ FALLBACK = ("Não encontrei isso nas fontes atuais. Posso responder: headcount, 
 
 @dataclass
 class Answer:
+    """One answer: the stage that produced it, its kind, the text and, for stage 2, the code that ran."""
+
     stage: float
     kind: str
     text: str
     code: str = ""
 
 
-def load_tables(gold_dir=GOLD_DIR) -> dict:
-    tables = {}
+def load_tables(gold_dir: Path | str = GOLD_DIR) -> Tables:
+    """Reads the Gold spreadsheets and normalizes the month column to 'YYYY-MM-DD' text."""
+    tables: Tables = {}
     for key, name in FILES.items():
         path = Path(gold_dir) / name
         if not path.exists():
@@ -82,7 +90,8 @@ def load_tables(gold_dir=GOLD_DIR) -> dict:
     return tables
 
 
-def detect_metric(q: str):
+def detect_metric(q: str) -> str | None:
+    """Returns the key of the first metric whose keywords appear in the question, or None."""
     nq = norm(q)
     for key, spec in METRICS.items():
         if any(w in nq for w in spec["words"]):
@@ -90,7 +99,8 @@ def detect_metric(q: str):
     return None
 
 
-def detect_companies(q: str, companies: list) -> list:
+def detect_companies(q: str, companies: list[str]) -> list[str]:
+    """Returns the companies named in the question, by full name or by their last word."""
     nq = norm(q)
     found = []
     for c in companies:
@@ -100,7 +110,8 @@ def detect_companies(q: str, companies: list) -> list:
     return found
 
 
-def classify(q: str, metric) -> str:
+def classify(q: str, metric: str | None) -> str:
+    """Classifies the question as 'explain', 'analysis', 'lookup' or 'other'."""
     nq = norm(q)
     if RE_EXPLAIN.search(nq):
         return "explain"
@@ -109,7 +120,8 @@ def classify(q: str, metric) -> str:
     return "lookup" if metric else "other"
 
 
-def _fmt(kind: str, v) -> str:
+def _fmt(kind: str, v: float) -> str:
+    """Formats a value as an integer, a percentage or a number of days (Brazilian decimal comma)."""
     if kind == "int":
         return f"{int(v)}"
     if kind == "pct":
@@ -117,7 +129,8 @@ def _fmt(kind: str, v) -> str:
     return f"{v:.1f} dias".replace(".", ",")
 
 
-def _value_line(row, spec) -> str:
+def _value_line(row: pd.Series | None, spec: dict[str, Any]) -> str:
+    """Text for one company: the value, 'suppressed due to group size' or 'no data'."""
     if row is None:
         return "sem dado no período"
     if bool(row.get("suppressed", False)):
@@ -126,7 +139,8 @@ def _value_line(row, spec) -> str:
     return "sem dado no período" if pd.isna(v) else _fmt(spec["fmt"], v)
 
 
-def stage0(q: str, metric: str, iso, t: dict) -> Answer:
+def stage0(q: str, metric: str, iso: str | None, t: Tables) -> Answer:
+    """Stage 0: direct lookup of one metric for the requested companies and month."""
     spec = METRICS[metric]
     df = t[spec["table"]]
     all_companies = sorted(t["headcount"]["company"].unique())
@@ -143,7 +157,8 @@ def stage0(q: str, metric: str, iso, t: dict) -> Answer:
     return Answer(0, "lookup", title + ":\n" + "\n".join(lines))
 
 
-def build_context(metric, companies: list, t: dict, budget: int = CONTEXT_BUDGET) -> str:
+def build_context(metric: str | None, companies: list[str], t: Tables, budget: int = CONTEXT_BUDGET) -> str:
+    """Builds the filtered, size-limited context sent to the LLM: last 6 months of the relevant table."""
     keys = [METRICS[metric]["table"]] if metric and "table" in METRICS[metric] else ["headcount", "turnover"]
     parts = []
     for key in keys:
@@ -156,13 +171,15 @@ def build_context(metric, companies: list, t: dict, budget: int = CONTEXT_BUDGET
     return "\n".join(parts)[:budget]
 
 
-def stage1(q: str, metric, t: dict, llm) -> Answer:
+def stage1(q: str, metric: str | None, t: Tables, llm: LLM) -> Answer:
+    """Stage 1: asks the LLM, giving it only the filtered context."""
     companies = detect_companies(q, sorted(t["headcount"]["company"].unique()))
     prompt = PROMPT.format(context=build_context(metric, companies, t), question=q)
     return Answer(1, "llm", llm(prompt))
 
 
-def stage2(q: str, t: dict, codegen):
+def stage2(q: str, t: Tables, codegen: CodeGen) -> Answer | None:
+    """Stage 2: runs generated analysis code in the sandbox. Returns None if it is rejected or fails."""
     try:
         code = codegen(q, {k: list(df.columns) for k, df in t.items()})
         result = run_sandboxed(code, {k: df.copy() for k, df in t.items()})
@@ -172,7 +189,8 @@ def stage2(q: str, t: dict, codegen):
     return Answer(2, "code", "Resultado da análise:\n" + text, code=code)
 
 
-def answer(q: str, t: dict, llm=None, codegen=None) -> Answer:
+def answer(q: str, t: Tables, llm: LLM | None = None, codegen: CodeGen | None = None) -> Answer:
+    """Routes the question to the cheapest stage that can answer it."""
     metric = detect_metric(q)
     if metric and METRICS[metric].get("unavailable"):  # never escalates: an LLM would make it up
         return Answer(0, "unavailable", f"{METRICS[metric]['title']}: não disponível nas fontes atuais. "
@@ -183,7 +201,7 @@ def answer(q: str, t: dict, llm=None, codegen=None) -> Answer:
         return Answer(0.5, "out_of_range",
                       f"Período fora da série disponível ({label(months[0])} a {label(months[-1])}).")
     kind = classify(q, metric)
-    if kind == "lookup":
+    if kind == "lookup" and metric:
         return stage0(q, metric, iso, t)
     if kind == "analysis" and codegen:
         a = stage2(q, t, codegen)

@@ -4,6 +4,7 @@ Usage: py src/evaluate.py [-v]
 Exits with code 1 if any expected stage or text does not match.
 """
 import csv
+import io
 import sys
 from collections import Counter
 from pathlib import Path
@@ -15,11 +16,15 @@ QUESTIONS = Path(__file__).resolve().parents[1] / "eval_questions.csv"
 
 
 def main(verbose: bool = False) -> int:
-    sys.stdout.reconfigure(encoding="utf-8")
+    """Runs every question of the evaluation set; returns 1 if any expectation fails, otherwise 0."""
+    if isinstance(sys.stdout, io.TextIOWrapper):  # a real console; a redirected stream has nothing to reconfigure
+        sys.stdout.reconfigure(encoding="utf-8")
     tables = load_tables()
     llm, codegen = StubLLM(), StubCodegen()
-    rows = list(csv.DictReader(open(QUESTIONS, encoding="utf-8")))
-    stages, failures = Counter(), []
+    with open(QUESTIONS, encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    stages: Counter[float] = Counter()
+    failures: list[str] = []
 
     for r in rows:
         a = answer(r["question"], tables, llm=llm, codegen=codegen)

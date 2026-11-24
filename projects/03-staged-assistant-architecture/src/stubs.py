@@ -10,10 +10,11 @@ from periods import norm
 class StubLLM:
     """Extractive: returns the first lines of the context. Counts how many times it was called."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.calls = 0
 
     def __call__(self, prompt: str) -> str:
+        """Answers with the first lines of the context found in the prompt."""
         self.calls += 1
         context = prompt.split("CONTEXTO:")[1].split("PERGUNTA:")[0].strip()
         return "[stub-llm] Com base no contexto: " + " | ".join(context.splitlines()[:3])
@@ -22,10 +23,11 @@ class StubLLM:
 class StubCodegen:
     """Fixed rules in place of a code-generating model. Counts the calls."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.calls = 0
 
-    def __call__(self, question: str, schema: dict) -> str:
+    def __call__(self, question: str, schema: dict[str, list[str]]) -> str:
+        """Returns analysis code for the few questions it knows; raises NotImplementedError otherwise."""
         self.calls += 1
         nq = norm(question)
         if "turnover" in nq:

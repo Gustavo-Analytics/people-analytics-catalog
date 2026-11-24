@@ -30,7 +30,7 @@ def label(iso: str) -> str:
     return f"{ABBR[int(month) - 1]}/{year}"
 
 
-def parse_period(text: str, available: list):
+def parse_period(text: str, available: list[str]) -> tuple[str | None, str]:
     """Returns (iso | None, status). status: 'none' | 'ok' | 'out_of_range'.
 
     `available` is the sorted list of the series' months, formatted as 'YYYY-MM-01'.
@@ -47,9 +47,9 @@ def parse_period(text: str, available: list):
     m = RE_NAMED.search(nq)
     if m:
         month = MONTHS[m.group(1)]
-        year = m.group(2)
-        if year:
-            year = int(year) + (2000 if len(year) == 2 else 0)
+        year_text = m.group(2)
+        if year_text:
+            year = int(year_text) + (2000 if len(year_text) == 2 else 0)
             iso = f"{year}-{month:02d}-01"
             return (iso, "ok") if iso in available else (None, "out_of_range")
         same = [a for a in available if int(a[5:7]) == month]
